@@ -37,7 +37,7 @@ env:
   
   
 jobs:
-  job_openwrt-packages:                   ## 运行脚本的备注名称（可更改）
+  build-luci-app:                         ## 此脚本的任务名称（可自定义）
     runs-on: ubuntu-latest                ## 使用ubuntu-最新版
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
 
@@ -93,7 +93,7 @@ jobs:
       run: |
         pwd && ls
         
-        chmod +x DIY/${{matrix.target}}.sh                                          ## DIY目录内的main.sh脚本  增加可执行的权限
+        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
         git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}}                    ## 克隆旧版本插件到 main 目录内；
         cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
         
@@ -102,16 +102,16 @@ jobs:
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
         git rm -r --cache * >/dev/null 2>&1 &                                     ## 清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "DIY"` >/dev/null 2>&1       ## 删除当前所有插件源码，（只保存插件版本号在 index内）
-        $GITHUB_WORKSPACE/DIY/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
-        bash /$GITHUB_WORKSPACE/DIY/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
-        bash /$GITHUB_WORKSPACE/DIY/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
-        bash /$GITHUB_WORKSPACE/DIY/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除当前所有插件源码，（只保存插件版本号在 index内）
+        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
 
         # 在线手动执行步骤
         # cd .github               ## 进入隐藏文件
         
-        # chmod +x DIY/main.sh
+        # chmod +x build/main.sh
         # git clone -b main https://github.com/zzid2/120.git main
         
         # mkdir -p main
@@ -123,10 +123,10 @@ jobs:
         # git rm -r --cache * >/dev/null 2>&1 &
         # rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
         # cd ../
-        # bash DIY/main.sh
-        # bash DIY/convert_translation.sh
-        # bash DIY/create_acl_for_luci.sh -a
-        # bash DIY/Modify.sh
+        # bash build/main.sh
+        # bash build/convert_translation.sh
+        # bash build/create_acl_for_luci.sh -a
+        # bash build/Modify.sh
         # cd main
         # git add .
         # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
