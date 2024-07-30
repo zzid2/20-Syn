@@ -31,7 +31,7 @@ on:
       
 env:
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-150.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/66.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
