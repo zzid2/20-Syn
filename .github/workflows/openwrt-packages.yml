@@ -113,8 +113,8 @@ jobs:
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
         rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
         
-        git rm -r --cache * >/dev/null 2>&1 &                                     ## 清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除当前所有插件源码，（只保存插件版本号在 index内）
+        git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
         $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
         bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
