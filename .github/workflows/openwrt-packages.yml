@@ -9,10 +9,10 @@ on:
   repository_dispatch:                                 ## 存储库调度
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
-      ssh:                         ## 做判断时用的ID名称（可更改）  
-        description: 'SSH远程'     ## 工作流_菜单提示框的名称
+      ssh:                                             ## 做判断时用的ID名称（可更改）  
+        description: 'SSH远程'                         ## 工作流_菜单提示框的名称
         required: false
-        default: 'true-false'      ## 输入：true=开启 false=关闭
+        default: 'true-false'                          ## 输入：true=开启 false=关闭
       packages:                                        ## 做判断时用的ID名称（可更改）  
         description: '更新插件'                        ## 工作流_菜单提示框的名称
         required: false
@@ -23,64 +23,66 @@ on:
     - cron: 0 */6 * * *                                ## 每隔6个小时运行一次
     
     
-  push:                            ## 修改任意代码（或指定文件） 触发编译
-    paths:                         ## 当指定文件“修改变动时” 触发编译
+  push:                                                ## 修改任意代码（或指定文件） 触发编译
+    paths:                                             ## 当指定文件“修改变动时” 触发编译
       - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
       
       
-env:
+env:                                                   ## 全局变量
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-app.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
-  REPO_BRANCH: main                                    ## 定时克隆并上传的分支（换仓库_需要修改!!!）
+  CangKu_URL: 'https://github.com/zzid2/luci-200.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
+  REPO_BRANCH: main                                    ## 主要更新 分支
+  REPO_FORMER: former                                  ## 旧版删库 分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
-  
 jobs:
-  build-luci-app:                         ## 此脚本的任务名称（可自定义）
-    runs-on: ubuntu-latest                ## 使用ubuntu-最新版
+  build-luci-app:                                      ## 此脚本的任务名称（可自定义）
+    runs-on: ubuntu-latest                             ## 使用ubuntu-最新版
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
 
 
-    name: 更新openwrt-packages            ## 运行工作流的名称 Update openwrt-packages
+    name: 更新openwrt-packages                         ## 运行工作流的名称 Update openwrt-packages
     strategy:
       fail-fast: false
       matrix:
-        target: [main]                    ## 运行main分支
+        target: [main]                                 ## 运行main分支
         
     steps:
     
-    - name: 准备环境                      ## Checkout 
+    - name: 准备环境                                   ## Checkout 
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
 
-    - name: 安装编译环境                  ## Initialization environment
+    - name: 安装编译环境                               ## Initialization environment
       run : |
         pwd && ls
         
+        AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                                ## 仓库作者ID，如：zzid2
+        echo "AUTHOR_ID=$AUTHOR_ID" >> $GITHUB_ENV                                                 ## 仓库作者ID，写入到变量中
         
-        AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                 ## 仓库作者ID，如：zzid2
-        echo "AUTHOR_ID=$AUTHOR_ID" >> $GITHUB_ENV                                  ## 仓库作者ID，写入到变量中
-        CangKu_ID=$(echo $CangKu_URL | awk -F'/' '{print $NF}' | sed 's/.git//')    ## 仓库项目ID，如：120
-        echo "CangKu_ID=$CangKu_ID" >> $GITHUB_ENV                                  ## 仓库项目ID，写入到变量中
-        CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                       ## 当前仓库的名称
-        echo "CangKu=${CangKu}" >> $GITHUB_ENV                                      ## 当前仓库的名称 写入到变量中
-        echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV               ## = date1 变量时间格式: 2021年01月02号-13点10分
-        echo "$(date +%s)" > start_time.txt                                         ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
+        CangKu_ID=$(echo $CangKu_URL | awk -F'/' '{print $NF}' | sed 's/.git//')                   ## 仓库项目ID，如：120
+        echo "CangKu_ID=$CangKu_ID" >> $GITHUB_ENV                                                 ## 仓库项目ID，写入到变量中
+        
+        CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
+        echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
+        
+        echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
+        echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
+        echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
+        
+        git config --global user.name "actions-user"                                               ## 提交名称
+        git config --global user.email "$AUTHOR_ID@users.noreply.github.com"                       ## 提交Github仓库的电子邮件地址（默认自己仓库）
+        sudo timedatectl set-timezone "$TZ"                                                        ## 设置时区为上海
         
         ## 终端添加中文
-        sudo apt-get install -y language-pack-zh-hans                                    # 安装中文语言包
-        echo "LANG=zh_CN.UTF-8" >> $GITHUB_ENV                                           # 加入中文语言包 的变量，会持续显示中文语言；
-        
-        
-        git config --global user.name "actions-user"                                ## 提交名称
-        git config --global user.email "$AUTHOR_ID@users.noreply.github.com"        ## 提交Github仓库的电子邮件地址（默认自己仓库）
-        sudo timedatectl set-timezone "$TZ"                                         ## 设置时区为上海
+        sudo apt-get install -y language-pack-zh-hans                                              ## 安装中文语言包
+        echo "LANG=zh_CN.UTF-8" >> $GITHUB_ENV                                                     ## 加入中文语言包 的变量，会持续显示中文语言；
         
         
         
-    - name: SSH链接（到此预计10分钟）     ## SSH connection to Actions
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
       if: github.event.inputs.ssh == 'true'
       env:
@@ -89,88 +91,151 @@ jobs:
         
         
         
-    - name: 克隆软件包                    ## Clone packages
+    - name: 下载 former 分支                           ## Clone packages
       run: |
-        pwd && ls
+        # pwd && ls
         
-        chmod +x build/${{matrix.target}}.sh                                          ## build目录内的main.sh脚本  增加可执行的权限
+        git clone -b $REPO_FORMER $CangKu_URL $REPO_FORMER || {                                    ## 克隆 former 分支，如果克隆远程仓库失败，本地创建新仓库。
+            echo "克隆远程仓库失败，本地创建新仓库！！！";
+            mkdir $REPO_FORMER;                                                                    ## 创建 former目录
+            cd $REPO_FORMER;                                                                       ## cd 进入目录
+            git init;                                                                              ## 初始化新仓库
+            git branch -M $REPO_FORMER;                                                            ## 重命名默认分支为 "former"
+            cd ..;                                                                                 ## 返回上级目录
+        }
         
-        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || {
-            echo "遇到新仓库克隆失败，初始推送到新仓库！！！";
-            mkdir ${{matrix.target}};
-            cd ${{matrix.target}};
-            git init;                                                                 ## 初始化一个新的Git仓库
-            git config --global init.defaultBranch $REPO_BRANCH;                      ## 设置全局默认分支名称
-            git branch -M $REPO_BRANCH;                                               ## 重命名当前分支为指定分支
-            git checkout -b $REPO_BRANCH;                                             ## 创建并切换到指定分支
-            cd ..;                                                                    ## 返回上级目录
-        }                                                                             ## 克隆旧版本插件到 main 目录内，如果遇到新仓库克隆失败则初始化新的仓库。
-        
-        
-        cd ${{matrix.target}}                                                       ## 进入名称为 main 的目录内；
+        cd $REPO_FORMER
         
         rm -rf {LICENSE,README,README.md,README_en.md}
         rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                      ## 删除无用说明
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
         
-        git rm -r --cache * >/dev/null 2>&1 &                                     ## Git 仓库中移除缓存的文件和目录   清除克隆的插件多余的名称，只显示插件版本号 方便比对；并保存至 index 文件内：.github/main/.git/index
-        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1       ## 删除非"build"目录以为的所有文件目录，删除当前所有插件源码，（只保存插件版本号在 index内）
-        $GITHUB_WORKSPACE/build/${{matrix.target}}.sh                               ## 执行main.sh       重新克隆一遍 最新版的插件！！！
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                        ## 执行convert_translation.sh  全部改成zh-cn中文
-        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                     ## 执行create_acl_for_luci.sh  输入报错提示
-        bash /$GITHUB_WORKSPACE/build/Modify.sh                                     ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
+        
+        echo "这是一个存放删库的目录" > former.txt
+        
+        
+        
+    - name: 下载 main 分支                             ## Clone packages
+      run: |
+        # pwd && ls
+        
+        git clone -b $REPO_BRANCH $CangKu_URL ${{matrix.target}} || {                              ## 克隆 main 分支，如果克隆远程仓库失败，本地创建新仓库。
+            echo "克隆远程仓库失败，本地创建新仓库！！！";
+            mkdir ${{matrix.target}};
+            cd ${{matrix.target}};
+            git init;
+            git branch -M $REPO_BRANCH;
+            cd ..;
+        }
+        
+        
+        
+        ## 比较main和former目录，在重复的former子目录后追加后缀；
+        for item in ${{matrix.target}}/*; do                                                                          ## 遍历 main 目录内所有文件目录，
+            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"      ## 重命名 former 目录内重复的子目录，追加后缀名；
+                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date_BAK }}"
+            fi
+        done
+        
+        
+        
+        rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                               ## main目录同步到former目录，并排除 .git目录
+        
+        
+        chmod +x build/${{matrix.target}}.sh                                                       ## build目录内的main.sh脚本  增加可执行的权限
+        cd ${{matrix.target}}                                                                      ## cd 进入 main 目录
+        
+        
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
+        
+        git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
+        
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1                      ## 删除 当前目录内所有文件，但排除"build"目录；
+        
+        
+        
+        ## 第二次单独下载最新版插件
+        bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                        ## 执行main.sh       重新克隆一遍 最新版的插件！！！
+        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                                       ## 执行convert_translation.sh  全部改成zh-cn中文
+        bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                                    ## 执行create_acl_for_luci.sh  输入报错提示
+        bash /$GITHUB_WORKSPACE/build/Modify.sh                                                    ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
+        
+        
+        rm -rf {LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
+        
+        
+        
+    - name: 删除重复子目录
+      run: |
+        
+        for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
+            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+            rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
+            echo "删除重复项: $REPO_FORMER/$(basename "$item")"
+            fi
+        done
+        
+        
+        
+    - name: 上传全部源码                                                                           ## Upload bin directory
+      uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
+      with:
+        name: former_${{ env.date_BAK }}               ## 文件名称
+        path: ${{ github.workspace }}
+        
+      
 
-        # 在线手动执行步骤
-        # cd .github               ## 进入隐藏文件
         
-        # chmod +x build/main.sh
-        # git clone -b main https://github.com/zzid2/120.git main
-        
-        # mkdir -p main
-        # touch main/120.txt
-        # echo "123456" > "main/120.txt"
-        # cat main/120.txt
-        
-        # cd main
-        # git rm -r --cache * >/dev/null 2>&1 &
-        # rm -rf `find ./* -maxdepth 0 -type d ! -name "diy"` >/dev/null 2>&1
-        # cd ../
-        # bash build/main.sh
-        # bash build/convert_translation.sh
-        # bash build/create_acl_for_luci.sh -a
-        # bash build/Modify.sh
-        # cd main
-        # git add .
-        # git commit -am "update $(date '+%Y-%m-%d %H:%M:%S')"
-        # git push --quiet "https://密钥@github.com/zzid2/120.git" HEAD:main
-        
-        
-    - name: 上传   ## Upload
+    - name: 推送 main 分支                             ## Upload
       env: 
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}          ## 项目仓库中添加：ACCESS_TOKEN 令牌值
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
         pwd && ls
         
-        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then          ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
+        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                  ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
           cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
         fi
         
-        if [ -e $GITHUB_WORKSPACE/README.md ]; then        ## 判断！ 当有 README.md 文件时，复制到main目录内
+        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                ## 判断！ 当有 README.md 文件时，复制到main目录内
           cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
         fi
         
-        cd $GITHUB_WORKSPACE/${{matrix.target}}            ## 进入到main目录内
         
-        if git status --porcelain | grep .; then           ## 判断！ 当插件有更新差异时，提交，
+        cd $GITHUB_WORKSPACE/${{matrix.target}}                                                    ## 进入到main目录内
+        if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
-          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"     ## 插件后面备注更新时间
-          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}     ## 上传仓库的地址（新创建的仓库）
+          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                 ## 插件后面备注更新时间
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}             ## 上传仓库的地址（新创建的仓库）
         else
-          echo "nothing to commit"                         ## 反之提示： “没有什么可提交的”
+          echo "nothing to commit"                                                                 ## 反之提示： “没有什么可提交的”
           exit 0
         fi || exit 0
         
         
+        
+    - name: 推送 former 分支                           ## Upload
+      env: 
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
+      run: |
+        
+        cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到main目录内
+        if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
+          git add .
+          git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
+        else
+          echo "nothing to commit"                                                                  ## 反之提示： “没有什么可提交的”
+          exit 0
+        fi || exit 0
+
+
+
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
@@ -185,13 +250,13 @@ jobs:
       run : |
         # 计算运行时长必要的依赖工具（bc awk）
         
-        echo "$(date +%s)" > end_time.txt                   ## 结束时间 写入到“end_time.txt”文本中（与开头“start_time.txt”文本对应）
+        echo "$(date +%s)" > end_time.txt                                                           ## 结束时间 写入到“end_time.txt”文本中（与开头“start_time.txt”文本对应）
         ELAPSED_MINUTES=$(awk -v start=$(cat start_time.txt) -v end=$(cat end_time.txt) 'BEGIN { elapsed = end - start; printf "%.2f", elapsed / 60 }')         ## = ELAPSED_MINUTES变量：计算运行时间，并保留两位小数点和保留前面有0
         echo "ELAPSED_MINUTES=$ELAPSED_MINUTES" >> $GITHUB_ENV                                                                                                  ## 总运行时间（分钟）写入变量： ELAPSED_MINUTES    ELAPSED_TIME
         rm -rf {start_time.txt,end_time.txt}
         
         
-    - name: 准备编译_pushplus微信通知       ## Github设置里需添微信SCKEY=PUSHPLUS值
+    - name: 结束_pushplus微信通知       ## Github设置里需添微信SCKEY=PUSHPLUS值
       uses: xhnmt/pushplus-action@v1.0.0
       with:
         token: ${{ secrets.SCKEY }}
