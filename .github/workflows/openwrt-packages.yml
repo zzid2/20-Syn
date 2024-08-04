@@ -6,42 +6,47 @@
 
 name: 更新_Luci插件                                    ## Actions工作流的名称
 on:
-  repository_dispatch:                                 ## 存储库调度
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
       ssh:                                             ## 做判断时用的ID名称（可更改）  
         description: 'SSH远程'                         ## 工作流_菜单提示框的名称
-        required: false
-        default: 'true-false'                          ## 输入：true=开启 false=关闭
-      packages:                                        ## 做判断时用的ID名称（可更改）  
-        description: '更新插件'                        ## 工作流_菜单提示框的名称
-        required: false
-        default: 'false'
+        required: false                                ## 是否 必选项（否）
+        default: 'false'                               ## 输入：true=开启 false=关闭
+        type: boolean                                  ## 将类型设置为布尔类型（复选框）
+      release:                                         ## 做判断时用的ID名称（可更改）  
+        description: '发布标签'                        ## 工作流_菜单提示框的名称
+        required: false                                ## 是否 必选项（否）
+        default: 'true'                                ## 默认值
+        type: boolean                                  ## 将类型设置为布尔类型（复选框）
         
         
+  # repository_dispatch:                                 ## 存储库_调度触发运行
   schedule:                                            ## 定时触发开始编译(时间设置请看定时编译说明)
     - cron: 0 */6 * * *                                ## 每隔6个小时运行一次
     
     
   push:                                                ## 修改任意代码（或指定文件） 触发编译
+    branches:
+      - main                                           ## 确保只在 main 分支有改动时，触发编译
     paths:                                             ## 当指定文件“修改变动时” 触发编译
       - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
-      - 'main.sh'                                      ## 默认是"openwrt-packages.yml"文件变动时 触发编译
+      - 'main.sh'                                      ## 默认是"main.sh"文件变动时              触发编译
       
       
-env:                                                   ## 全局变量
+env:                                                   ## 全局变量定义
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
   CangKu_URL: 'https://github.com/zzid2/luci-app.git'  ## 定时克隆并上传的仓库（换仓库_需要修改!!!）luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 主要更新 分支
   REPO_FORMER: former                                  ## 旧版删库 分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
   
+  
 jobs:
   build-luci-app:                                      ## 此脚本的任务名称（可自定义）
     runs-on: ubuntu-latest                             ## 使用ubuntu-最新版
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
-
-
+    
+    
     name: 更新openwrt-packages                         ## 运行工作流的名称 Update openwrt-packages
     strategy:
       fail-fast: false
@@ -50,24 +55,28 @@ jobs:
         
     steps:
     
+    
     - name: 准备环境                                   ## Checkout 
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
+        
+        
+        
     - name: 安装编译环境                               ## Initialization environment
       run : |
         pwd && ls
         
-        AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                                ## 仓库作者ID，如：zzid2
-        echo "AUTHOR_ID=$AUTHOR_ID" >> $GITHUB_ENV                                                 ## 仓库作者ID，写入到变量中
+        AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                                ## 作者ID，如：zzid2
+        echo "AUTHOR_ID=$AUTHOR_ID" >> $GITHUB_ENV                                                 ## 作者ID，写入到变量中
         
-        CangKu_ID=$(echo $CangKu_URL | awk -F'/' '{print $NF}' | sed 's/.git//')                   ## 仓库项目ID，如：120
-        echo "CangKu_ID=$CangKu_ID" >> $GITHUB_ENV                                                 ## 仓库项目ID，写入到变量中
+        CangKu_ID=$(echo $CangKu_URL | awk -F'/' '{print $NF}' | sed 's/.git//')                   ## 项目ID，如：120
+        echo "CangKu_ID=$CangKu_ID" >> $GITHUB_ENV                                                 ## 项目ID，写入到变量中
         
-        CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 当前仓库的名称
-        echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 当前仓库的名称 写入到变量中
+        CangKu=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)                                      ## 仓库的名称 如：20-Syn
+        echo "CangKu=${CangKu}" >> $GITHUB_ENV                                                     ## 仓库的名称 写入到变量中
         
+        echo "date=$(date "+%Y.%m.%d-%H%M")" >> $GITHUB_ENV                                        ## 标签时间格式：2024.01.02.1310
         echo "date1=$(date "+%Y年%m月%d号-%H点%M分")" >> $GITHUB_ENV                              ## 时间变量格式: 2021年01月02号-13点10分
         echo "date_BAK=$(date +'%m.%d')" >> $GITHUB_ENV                                            ## 时间变量格式：08.01
         echo "$(date +%s)" > start_time.txt                                                        ## 启动时间 写入到“start_time.txt”文本中（与结尾“end_time.txt”文本对应）
@@ -104,11 +113,11 @@ jobs:
             cd ..;                                                                                 ## 返回上级目录
         }
         
-        cd $REPO_FORMER
+        cd $REPO_FORMER                                                                            ## 进入 former目录
         
-        rm -rf {LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
+        # rm -rf {LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}
         
         git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
@@ -130,7 +139,6 @@ jobs:
         }
         
         
-        
         ## 比较main和former目录，在重复的former子目录后追加后缀；
         for item in ${{matrix.target}}/*; do                                                                          ## 遍历 main 目录内所有文件目录，
             if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
@@ -140,17 +148,16 @@ jobs:
         done
         
         
+        rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                               ## 同步 复制“main”目录内文件 到“former”目录内，并排除 .git目录
         
-        rsync -av --exclude='.git' ${{matrix.target}}/ $REPO_FORMER/                               ## main目录同步到former目录，并排除 .git目录
         
-        
-        chmod +x build/${{matrix.target}}.sh                                                       ## build目录内的main.sh脚本  增加可执行的权限
+        chmod +x build/${{matrix.target}}.sh                                                       ## 增加 “build/main.sh”脚本可执行权限
         cd ${{matrix.target}}                                                                      ## cd 进入 main 目录
         
         
-        rm -rf {LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
+        # rm -rf {LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
         git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
@@ -165,13 +172,13 @@ jobs:
         bash /$GITHUB_WORKSPACE/build/Modify.sh                                                    ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
         
         
-        rm -rf {LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/{LICENSE,README,README.md,README_en.md}
-        rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
+        # rm -rf {LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/{LICENSE,README,README.md,README_en.md}
+        # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
         
         
-    - name: 删除重复子目录
+    - name: 整理重复子目录
       run: |
         
         for item in ${{matrix.target}}/*; do                                                                           ## 遍历 main 目录内所有文件目录，
@@ -182,15 +189,30 @@ jobs:
         done
         
         
+        mkdir -p packages                                                                                               ## 创建“packages”目录，用于存放.tar.gz压缩包，
+        tar --exclude='.git' -czvf packages/former_${{ env.date_BAK }}.tar.gz "$REPO_FORMER"                            ## 压缩“former”文件夹（排除.git目录）
+        tar --exclude='.git' -czvf packages/main_${{ env.date_BAK }}.tar.gz "${{matrix.target}}"                        ## 压缩“main”  文件夹（排除.git目录）
+        # cd packages
+        echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                             ## 列表写入变量中
+        
+        
+        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                                       ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
+          cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
+        fi
+        
+        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                                     ## 判断！ 当有 README.md 文件时，复制到main目录内
+          cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
+        fi
+        
+        
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: former_${{ env.date_BAK }}               ## 文件名称
-        path: ${{ github.workspace }}
+        name: former_${{ env.date_BAK }}               ## former 文件名称
+        path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
-      
-
+        
         
     - name: 推送 main 分支                             ## Upload
       env: 
@@ -198,22 +220,16 @@ jobs:
       run: |
         pwd && ls
         
-        if [ -e $GITHUB_WORKSPACE/LICENSE ]; then                                                  ## 判断！当工作目录内有 LICENSE 文件时，复制到  工作目录/main目录内
-          cp $GITHUB_WORKSPACE/LICENSE $GITHUB_WORKSPACE/${{matrix.target}}
-        fi
-        
-        if [ -e $GITHUB_WORKSPACE/README.md ]; then                                                ## 判断！ 当有 README.md 文件时，复制到main目录内
-          cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
-        fi
-        
-        
         cd $GITHUB_WORKSPACE/${{matrix.target}}                                                    ## 进入到main目录内
+        
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                 ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:${{matrix.target}}             ## 上传仓库的地址（新创建的仓库）
+          echo "push_main=true" >> $GITHUB_ENV                                                     ## 如果有   推送插件，写入变量真
         else
-          echo "nothing to commit"                                                                 ## 反之提示： “没有什么可提交的”
+          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
+          echo "push_main=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
           exit 0
         fi || exit 0
         
@@ -224,18 +240,36 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}                                                  ## 项目仓库中添加：ACCESS_TOKEN 令牌值
       run: |
         
-        cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到main目录内
+        cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到“former”目录内
+        
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
           git commit -am "更新时间：$(date '+%Y-%m-%d %H:%M:%S')"                                  ## 插件后面备注更新时间
           git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
+          echo "push_former=true" >> $GITHUB_ENV                                                    ## 如果有   推送插件，写入变量真
         else
-          echo "nothing to commit"                                                                  ## 反之提示： “没有什么可提交的”
+          echo "没有什么可提交的"                                                                  ## 反之提示： “没有什么可提交的”
+          echo "push_former=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
           exit 0
         fi || exit 0
-
-
-
+        
+        
+        
+    - name: 发布固件
+      uses: softprops/action-gh-release@v2
+      if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      with:
+        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}
+        tag_name: "${{ env.date }}"
+        body: |
+            ☆  常用插件
+            -
+            ☆  已经删库留存源码
+        files: ${{ env.PACKAGES }}/packages/*
+        
+        
         
     - name: 删除工作流程运行      ## Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
@@ -244,7 +278,19 @@ jobs:
         repository: ${{ github.repository }}
         retain_days: 1
         keep_minimum_runs: 2
-
+        
+        
+        
+    - name: 删除旧发布版本            ## Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.3.4          ## https://github.com/dev-drprasad/delete-older-releases
+      if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      with:
+        keep_latest: 30            ## 保留最少数（默认值：3）
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        
+        
         
     - name: 计算总运行时长
       run : |
@@ -254,6 +300,7 @@ jobs:
         ELAPSED_MINUTES=$(awk -v start=$(cat start_time.txt) -v end=$(cat end_time.txt) 'BEGIN { elapsed = end - start; printf "%.2f", elapsed / 60 }')         ## = ELAPSED_MINUTES变量：计算运行时间，并保留两位小数点和保留前面有0
         echo "ELAPSED_MINUTES=$ELAPSED_MINUTES" >> $GITHUB_ENV                                                                                                  ## 总运行时间（分钟）写入变量： ELAPSED_MINUTES    ELAPSED_TIME
         rm -rf {start_time.txt,end_time.txt}
+        
         
         
     - name: 结束_pushplus微信通知       ## Github设置里需添微信SCKEY=PUSHPLUS值
