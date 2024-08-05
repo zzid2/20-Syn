@@ -92,12 +92,12 @@ jobs:
         
         
         
-    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
-      uses: P3TERX/ssh2actions@v1.0.0
-      if: github.event.inputs.ssh == 'true'
-      env:
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+    # - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
+      # uses: P3TERX/ssh2actions@v1.0.0
+      # if: github.event.inputs.ssh == 'true'
+      # env:
+        # TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        # TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
         
         
@@ -178,6 +178,12 @@ jobs:
         # rm -rf ./*/*/{LICENSE,README,README.md,README_en.md}                                       ## 删除无用说明
         
         
+    - name: SSH链接（到此预计10分钟）                  ## SSH connection to Actions
+      uses: P3TERX/ssh2actions@v1.0.0
+      if: github.event.inputs.ssh == 'true'
+      env:
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         
     - name: 整理重复子目录
       run: |
