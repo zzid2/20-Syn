@@ -266,7 +266,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
-        name: ${{ env.date1 }} 「 软件工具 」${{env.REPO_FORMER}}分支#${{env.Run_number}}
+        name: ${{ env.date1 }} 「 软件工具 」#${{env.Run_number}}
         tag_name: "${{ env.date }}"
         body: |
             ☆  常用插件
