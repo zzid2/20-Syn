@@ -193,7 +193,7 @@ jobs:
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
         tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        mv -f $REPO_BRANCH/Backups Backups                                                                             ## 移动 仓库发布资产“Backups”至 packages 目录内
+        mv -f "$REPO_BRANCH"/Backups Backups                                                                           ## 移动 仓库发布资产“Backups”至 packages 目录内
         tar --exclude='.git' -czvf packages/"Backups_${{ env.date2 }}".tar.gz Backups                                  ## 压缩 仓库发布资产“Backups”
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
@@ -266,7 +266,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
-        name: ${{ env.date1 }} 「 ${{env.REPO_FORMER}} 」分支#${{env.Run_number}}
+        name: ${{ env.date1 }} 「 软件工具 」${{env.REPO_FORMER}}分支#${{env.Run_number}}
         tag_name: "${{ env.date }}"
         body: |
             ☆  常用插件
