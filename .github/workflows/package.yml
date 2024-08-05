@@ -193,7 +193,7 @@ jobs:
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
         tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        mv -f "$REPO_BRANCH"/Backups Backups                                                                           ## 移动 仓库发布资产“Backups”至 packages 目录内
+        mv -f main/Backups Backups                                                                           ## 移动 仓库发布资产“Backups”至 packages 目录内
         tar --exclude='.git' -czvf packages/"Backups_${{ env.date2 }}".tar.gz Backups                                  ## 压缩 仓库发布资产“Backups”
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
@@ -212,7 +212,7 @@ jobs:
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
-        name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
+        name: 软件工具_${{env.CangKu}}_${{ env.date2 }}   ## 文件名称
         path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
         
