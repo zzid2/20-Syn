@@ -188,20 +188,20 @@ jobs:
     - name: 整理重复子目录
       run: |
         
-        for item in $REPO_BRANCH/*; do                                                                                 ## 遍历 main 目录内所有文件目录，
-            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
-            rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
-            echo "删除重复项: $REPO_FORMER/$(basename "$item")"
-            fi
-        done
+        # for item in $REPO_BRANCH/*; do                                                                                 ## 遍历 main 目录内所有文件目录，
+            # if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                    ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+            # rm -rf "$REPO_FORMER/$(basename "$item")"                                                                  ## 删除 former 目录内重复的子目录；
+            # echo "删除重复项: $REPO_FORMER/$(basename "$item")"
+            # fi
+        # done
         
         
-        mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
-        tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
-        tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        mv -f main/Backups Backups                                                                           ## 移动 仓库发布资产“Backups”至 packages 目录内
-        tar --exclude='.git' -czvf packages/"Backups_${{ env.date2 }}".tar.gz Backups                                  ## 压缩 仓库发布资产“Backups”
-        # cd packages
+        # mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
+        # tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
+        # tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
+        # mv -f main/Backups Backups                                                                           ## 移动 仓库发布资产“Backups”至 packages 目录内
+        # tar --exclude='.git' -czvf packages/"Backups_${{ env.date2 }}".tar.gz Backups                                  ## 压缩 仓库发布资产“Backups”
+        # # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
         
