@@ -4,7 +4,7 @@
 ## 首先手动运行一次“20-Syn”工作流。
 
 
-name: 更新_Luci插件                                    ## Actions工作流的名称
+name: Package                                          ## Actions工作流的名称
 on:
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
@@ -29,13 +29,13 @@ on:
     branches:
       - main                                           ## 确保只在 main 分支有改动时，触发编译
     paths:                                             ## 当指定文件“修改变动时” 触发编译
-      - '.github/workflows/openwrt-packages.yml'       ## 默认是"openwrt-packages.yml"文件变动时 触发编译
-      - 'main.sh'                                      ## 默认是"main.sh"文件变动时              触发编译
+      - '.github/workflows/package.yml'                ## 默认是"package.yml"文件变动时 触发编译
+      - 'package.sh'                                   ## 默认是"package.sh"文件变动时  触发编译
       
       
 env:                                                   ## 全局变量定义
   Run_number: ${{github.run_number}}                   ## 当前运行工作流编号，如#12
-  CangKu_URL: 'https://github.com/zzid2/luci-app.git'  ## 推送仓库_luci-app.git   luci-120.git
+  CangKu_URL: 'https://github.com/zzid2/luci-201.git'  ## 推送仓库_luci-app.git   luci-120.git
   REPO_BRANCH: main                                    ## 推送分支_主分支
   REPO_FORMER: former                                  ## 推送分支_旧版删库分支
   TZ: Asia/Shanghai                                    ## 时区设置为上海
@@ -47,11 +47,11 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
     
     
-    name: 更新openwrt-packages                         ## 运行工作流的名称 Update openwrt-packages
+    name: 更新Package                                  ## 运行工作流的名称 Update openwrt-packages
     strategy:
       fail-fast: false
       matrix:
-        target: [main]                                 ## 并行运行多任务
+        target: [package]                              ## 并行运行多任务
         
     steps:
     
@@ -168,7 +168,7 @@ jobs:
         
         ## 第二次单独下载最新版插件
         bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                        ## 执行main.sh       重新克隆一遍 最新版的插件！！！
-        bash /$GITHUB_WORKSPACE/build/convert_translation.sh                                       ## 执行convert_translation.sh  全部改成zh-cn中文
+        # bash /$GITHUB_WORKSPACE/build/convert_translation.sh                                       ## 执行convert_translation.sh  全部改成zh-cn中文
         bash /$GITHUB_WORKSPACE/build/create_acl_for_luci.sh -a                                    ## 执行create_acl_for_luci.sh  输入报错提示
         bash /$GITHUB_WORKSPACE/build/Modify.sh                                                    ## 执行Modify.sh    删除插件包内（.git .svn 等多余的文件）
         
@@ -193,6 +193,8 @@ jobs:
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/$REPO_FORMER_${{ env.date2 }}.tar.gz "$REPO_FORMER"                        ## 压缩“former”文件夹（排除.git目录）
         tar --exclude='.git' -czvf packages/$REPO_BRANCH_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                        ## 压缩“main”  文件夹（排除.git目录）
+        mv -f $REPO_BRANCH/Backups Backups                                                                             ## 移动 仓库发布资产“Backups”至 packages 目录内
+        tar --exclude='.git' -czvf packages/"Backups_${{ env.date2 }}".tar.gz Backups                                  ## 压缩 仓库发布资产“Backups”
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
