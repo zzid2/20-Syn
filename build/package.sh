@@ -48,7 +48,7 @@ git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file      tl-rtc-fi
 git clone --depth 1 https://github.com/baogaichejian/blinker_xiaoai_wendu   blinker_xiaoai_wendu_控制esp8266    ## 点灯科技控制esp8266
 git clone --depth 1 https://github.com/chuangmengtech/blinker_xiaoai_wendu   blinker_xiaoai_wendu_esp8266温度传感器          ## esp8266温度传感器
 git clone --depth 1 https://github.com/Fatetang/blinker_xiaoai_dengpao-wendu-ESP8266 blinker_xiaoai_dengpao-wendu-ESP8266_ESP8266+继电器  # 点灯科技
-# git clone --depth 1 
+git clone --depth 1 https://github.com/esirplayground/VPS_OpenWrt      VPS_OpenWrt                      # 本部署OpenWrt到VPS平台
 # git clone --depth 1 
 # git clone --depth 1 
 # ----------------------------------下载仓库最新发布的资产------------------------------------------------------------------------
