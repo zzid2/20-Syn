@@ -77,6 +77,8 @@ git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git              
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 ### git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff                                                                              # 关机插件
 
+git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edge       # Edge 带背景音乐
+
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset.git                                                                           # 插件 执行定时任务
 #git clone --depth 1 https://github.com/sirpdboy/netspeedtest.git                                                                                   # 网络速度测试
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-advanced.git                                                                              # 系统高级设置   高级设置（内置luci-app-fileassistant文件助手）
@@ -156,6 +158,8 @@ git clone --depth 1 https://github.com/gngpp/luci-app-design-config.git         
 
 git clone --depth 1 https://github.com/thinktip/luci-theme-neobird.git                                 # neobird主题，针对移动端优化
 git clone --depth=1 -b openwrt-18.06 https://github.com/rosywrt/luci-theme-rosy                        # rosy玫瑰红主题
+
+git clone --depth 1 https://github.com/XXKDB/luci-theme-argon_armygreen                                ## 动漫主题
 
 ### git clone --depth 1 https://github.com/sirpdboy/luci-theme-opentopd                                  # 橙色主题
 ### git clone --depth 1 https://github.com/kenzok8/luci-theme-ifit ifit && mv -n ifit/luci-theme-ifit ./;rm -rf ifit
