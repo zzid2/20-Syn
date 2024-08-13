@@ -97,7 +97,7 @@ git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edg
 
 #git clone --depth 1 https://github.com/honwen/luci-app-aliddns.git																				    # 阿里DDNS
 #git clone --depth 1 https://github.com/kiddin9/luci-app-dnsfilter.git                                                                              # DNS 过滤器
-#git clone --depth 1 https://github.com/ophub/luci-app-amlogic.git amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic                      # 晶晨宝盒（N1或电视盒子）
+git clone --depth 1 https://github.com/ophub/luci-app-amlogic.git amlogic && mv -n amlogic/luci-app-amlogic ./;rm -rf amlogic                      # 晶晨宝盒（N1或电视盒子）
 #git clone --depth 1 https://github.com/rufengsuixing/luci-app-onliner.git package/luci-app-onliner                                                 # Online User 显示在线主机 需要luci-app-nlbwmon
 # git clone --depth 1 https://github.com/ntlf9t/luci-app-easymesh.git	                                                                            # 简单MESH易网
 # git clone --depth 1 https://github.com/Huangjoe123/luci-app-eqos.git	                                                                            # EQoS
@@ -120,23 +120,23 @@ git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edg
 # 长期不维护的源码
 # https://github.com/pppoex/openwrt-packages?tab=readme-ov-file
 git clone --depth=1 https://github.com/f8q8/luci-app-autoreboot luci-app-autoreboot     # 自动重启
+git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷向导设置
+git clone --depth=1 https://github.com/phillipliang/install-program install-program     # N1写入包 旧版 编译前勾选：Utilities--> install-program（推荐）
+git clone --depth=1 https://github.com/krysof/install-program install-program-2         # N1写入包 旧版
 
-git clone --depth=1 https://github.com/kiddin9/luci-app-wizard luci-app-wizard          # 快捷设置
+git clone --depth=1 https://github.com/281677160/luci-app-autoupdate luci-app-autoupdate  # openwrt自动升级
+git clone --depth=1 https://github.com/roacn/luci-app-autoupdate luci-app-autoupdate-2    # openwrt自动升级
 
+git clone --depth=1 https://github.com/xylz0928/luci-app-shutdown luci-app-shutdown       # 一键关闭/重启设备上的系统
+# https://github.com/Hyy2001X/AutoBuild-Packages
 
+git clone --depth=1 https://github.com/AlexZhuo/luci-app-bandwidthd luci-app-bandwidthd   # 流量统计
 
+git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb lua-maxminddb              # Lua 版 MaxMind DB 阅读器
 
+git clone --depth=1 https://github.com/ylqjgm/mknop   mknop                               # 自动构建斐讯 N1、微加云、贝壳云、我家云、S905x3( X96 Max Plus, HK1 Box ) OpenWrt 固件脚本
 
-
-
-
-
-
-
-
-
-
-
+git clone --depth=1 https://github.com/DavidDen/mknop mknop-2                             # 斐讯N1一键制作OpenWrt镜像脚本
 
 
 
