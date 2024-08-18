@@ -62,6 +62,7 @@ REPOS=(
     "WangGithubUser/FastGitHub"
     "truedread/netflix-1080p"
     "huiyadanli/RevokeMsgPatcher"
+	"lollipopkit/flutter_server_box"
 )
 
 # 下载文件保存的指定目录
