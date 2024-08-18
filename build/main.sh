@@ -17,13 +17,14 @@ function git_package(){
     repo=`echo $1 | rev | cut -d'/' -f 1 | rev`
     pkg=`echo $2 | rev | cut -d'/' -f 1 | rev`
 # find package/ -follow -name $pkg -not -path "package/openwrt-packages/*" | xargs -rt rm -rf
-    localdir=./                            # 变量= 保存的文件路径
+    localdir=./                                  # 变量= 下载文件路径（默认=  ./  ）
     git clone --depth=1 --single-branch $1
-    [ -d "$localdir" ] || mkdir -p "$localdir"   # 判断当前是否有 download 目录，如果不存在 则新创建 download 目录；= (-d 判断目录是否存在)  (mkdir -p 判断结果：如果目录不存在，则新创建 download 目录)
-    mv $2 "$localdir"                            # 移动下载的文件 至 download 目录内；
+    [ -d "$localdir" ] || mkdir -p "$localdir"
+    mv $2 "$localdir"                            # 移动下载的文件,至当前目录内；
     rm -rf $repo
 }
-##命令用法： git_package https://github.com/coolsnowwolf/luci luci/applications/luci-app-ddns   # git_package 加仓库链接  加仓库的文件路径
+##           git_package + 仓库链接 + 仓库文件路径
+## 命令用法： git_package "https://github.com/coolsnowwolf/luci" "luci/applications/luci-app-ddns"
 
 
 
