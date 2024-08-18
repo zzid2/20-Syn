@@ -139,15 +139,16 @@ http://example122.com"
 
 
 
-# 检查文件是否存在
 if [ -f "Favorite_URL.txt" ]; then
     # 文件存在，读取内容并与预定义内容比较
     current_content=$(cat Favorite_URL.txt)
     
     if [ "$current_content" != "$content" ]; then
-        # 内容不一致，覆盖写入新内容
-        echo "$content" > Favorite_URL.txt
-        echo "内容不一致，已更新文件。"
+        # 内容不一致，且文件确实有改动时才覆盖写入
+        if ! cmp -s <(echo "$content") Favorite_URL.txt; then
+            echo "$content" > Favorite_URL.txt
+            echo "内容不一致，已更新文件。"
+        fi
     else
         # 内容一致，跳过写操作
         echo "文件内容一致，无需修改。"
@@ -157,6 +158,30 @@ else
     echo "$content" > Favorite_URL.txt
     echo "文件不存在，已创建并写入内容。"
 fi
+
+
+
+
+
+
+# # 检查文件是否存在
+# if [ -f "Favorite_URL.txt" ]; then
+    # # 文件存在，读取内容并与预定义内容比较
+    # current_content=$(cat Favorite_URL.txt)
+    
+    # if [ "$current_content" != "$content" ]; then
+        # # 内容不一致，覆盖写入新内容
+        # echo "$content" > Favorite_URL.txt
+        # echo "内容不一致，已更新文件。"
+    # else
+        # # 内容一致，跳过写操作
+        # echo "文件内容一致，无需修改。"
+    # fi
+# else
+    # # 文件不存在，创建文件并写入内容
+    # echo "$content" > Favorite_URL.txt
+    # echo "文件不存在，已创建并写入内容。"
+# fi
 
 
 
