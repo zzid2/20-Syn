@@ -65,7 +65,7 @@ REPOS=(
 )
 
 # 下载文件保存的指定目录
-DOWNLOAD_DIR="$pwd_path/Backups"
+DOWNLOAD_DIR="$pwd_path/Backups-exe"
 
 
 # 获取前3个发布的资产并下载

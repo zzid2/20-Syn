@@ -4,7 +4,7 @@
 ## 首先手动运行一次“20-Syn”工作流。
 
 
-name: Package                                          ## Actions工作流的名称
+name: Package-exe                                      ## Actions工作流的名称
 on:
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
@@ -29,8 +29,8 @@ on:
     branches:
       - main                                           ## 确保只在 main 分支有改动时，触发编译
     paths:                                             ## 当指定文件“修改变动时” 触发编译
-      - '.github/workflows/package-exe.yml'                ## 默认是"package.yml"文件变动时 触发编译
-      - 'package-exe.sh'                                   ## 默认是"package.sh"文件变动时  触发编译
+      - '.github/workflows/package-exe.yml'            ## 默认是"package.yml"文件变动时 触发编译
+      - 'package-exe.sh'                               ## 默认是"package.sh"文件变动时  触发编译
       
       
 env:                                                   ## 全局变量定义
@@ -47,11 +47,11 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
     
     
-    name: 更新Package                                  ## 运行工作流的名称 Update openwrt-packages
+    name: 更新package-exe                                  ## 运行工作流的名称 Update openwrt-packages
     strategy:
       fail-fast: false
       matrix:
-        target: ["package-exe"]                              ## 并行运行多任务
+        target: ["package-exe"]                            ## 并行运行多任务
         
     steps:
     
@@ -192,9 +192,9 @@ jobs:
         
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
-        mv -f $REPO_BRANCH/Backups Backups                                                                             ## 移动 仓库发布资产“Backups”至 packages 目录内
-        tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        tar --exclude='.git' -czvf packages/Backups_${{ env.date2 }}.tar.gz Backups                                    ## 压缩 仓库发布资产“Backups”
+        mv -f $REPO_BRANCH/"Backups-exe" "Backups-exe"                                                                 ## 移动 仓库发布资产“main/Backups-exe”至 Backups-exe 目录内
+        tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）至 packages目录内
+        tar --exclude='.git' -czvf packages/Backups_${{ env.date2 }}.tar.gz "Backups-exe"                              ## 压缩 仓库发布资产"Backups-exe”至 packages目录内
         # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
