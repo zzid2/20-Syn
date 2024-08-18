@@ -33,27 +33,29 @@ function mvdir() {
 mv -n `find $1/* -maxdepth 0 -type d` ./                                       ## 移动分支内所有文件到 当前目录；  -n 不覆盖已存在的文件
 rm -rf $1
 }
-
-
-
-
-
-git clone --depth 1 https://github.com/WangGithubUser/FastGitHub       FastGitHub_加速工具              ## GitHub加速工具              （下载资产）
+# ----------------------------------下载最新版插件，在“main”目录内----------------------------------------------------------------
+git clone --depth 1 https://github.com/WangGithubUser/FastGitHub       FastGitHub_加速工具              ## GitHub加速工具              （上传资产）
 git clone --depth 1 https://github.com/fhefh2015/Fast-GitHub           Fast-GitHub_加速工具             ## GitHub加速工具
 git clone --depth 1 https://github.com/cuifengcn/TAICHI-flet           TAICHI-flet_太极工具箱           ## 太极工具箱
-git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher     RevokeMsgPatcher_微信防撤回      ## PC版微信/QQ/TIM防撤回       （下载资产）
-git clone --depth 1 https://github.com/truedread/netflix-1080p         netflix-1080p                    ## Netflix-1080P插件           （下载资产）
+git clone --depth 1 https://github.com/huiyadanli/RevokeMsgPatcher     RevokeMsgPatcher_微信防撤回      ## PC版微信/QQ/TIM防撤回       （上传资产）
+git clone --depth 1 https://github.com/truedread/netflix-1080p         netflix-1080p                    ## Netflix-1080P插件           （上传资产）
 git clone --depth 1 https://github.com/h2y/Shadowrocket-ADBlock-Rules  Shadowrocket-ADBlock-Rules_广告过滤功能   ## 火箭  屏蔽广告规则
 git clone --depth 1 https://github.com/tl-open-source/tl-rtc-file      tl-rtc-file_在线文件传输         ## 开源在线文件传输
 git clone --depth 1 https://github.com/baogaichejian/blinker_xiaoai_wendu   blinker_xiaoai_wendu_控制esp8266    ## 点灯科技控制esp8266
 git clone --depth 1 https://github.com/chuangmengtech/blinker_xiaoai_wendu   blinker_xiaoai_wendu_esp8266温度传感器          ## esp8266温度传感器
 git clone --depth 1 https://github.com/Fatetang/blinker_xiaoai_dengpao-wendu-ESP8266 blinker_xiaoai_dengpao-wendu-ESP8266_ESP8266+继电器  # 点灯科技
 git clone --depth 1 https://github.com/esirplayground/VPS_OpenWrt      VPS_OpenWrt                      # 本部署OpenWrt到VPS平台
-git clone --depth 1 https://github.com/lollipopkit/flutter_server_box   flutter_server_box_全平台SSH工具
+git clone --depth 1 https://github.com/lollipopkit/flutter_server_box   flutter_server_box_全平台SSH工具 # 全平台SSH工具               （上传资产）
 # git clone --depth 1 
 # git clone --depth 1 
+
+
+
+
+
+
 # ----------------------------------下载仓库最新发布的资产------------------------------------------------------------------------
-# --------------------------------------------------------------------------------------------------------------------------------
+
 
 # sudo apt install jq             ## 需要安装 jp 依赖工具
 
@@ -120,6 +122,20 @@ download_latest_releases() {
 for repo in "${REPOS[@]}"; do
     download_latest_releases $repo
 done
+
+
+
+# ----------------------------------收藏的网址------------------------------------------------------------------------------------
+cat <<EOL > Favorite_URL.txt
+http://example1.com
+http://example12.com
+http://example122.com
+http://example1222.com
+http://example12222.com
+http://example122.com
+EOL
+
+
 # --------------------------------------------------------------------------------------------------------------------------------
 
 
