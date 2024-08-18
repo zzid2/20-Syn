@@ -128,11 +128,6 @@ done
 # ----------------------------------收藏的网址------------------------------------------------------------------------------------
 cat <<EOL > Favorite_URL.txt
 http://example1.com
-http://example12.com
-http://example122.com
-http://example1222.com
-http://example12222.com
-http://example122.com
 EOL
 
 
