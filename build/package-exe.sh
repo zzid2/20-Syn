@@ -137,16 +137,39 @@ http://example1222.com
 http://example12222.com
 http://example122.com"
 
-if [ ! -f "Favorite_URL.txt" ]; then
+
+
+# 检查文件是否存在
+if [ -f "Favorite_URL.txt" ]; then
+    # 文件存在，读取内容并与预定义内容比较
+    current_content=$(cat Favorite_URL.txt)
+    
+    if [ "$current_content" != "$content" ]; then
+        # 内容不一致，覆盖写入新内容
+        echo "$content" > Favorite_URL.txt
+        echo "内容不一致，已更新文件。"
+    else
+        # 内容一致，跳过写操作
+        echo "文件内容一致，无需修改。"
+    fi
+else
     # 文件不存在，创建文件并写入内容
     echo "$content" > Favorite_URL.txt
-else
-    # 文件存在，检查内容是否一致
-    if ! echo "$content" | sha256sum -c --status <(sha256sum Favorite_URL.txt); then
-        # 如果内容不一致，覆盖写入新内容
-        echo "$content" > Favorite_URL.txt
-    fi
+    echo "文件不存在，已创建并写入内容。"
 fi
+
+
+
+# if [ ! -f "Favorite_URL.txt" ]; then
+    # # 文件不存在，创建文件并写入内容
+    # echo "$content" > Favorite_URL.txt
+# else
+    # # 文件存在，检查内容是否一致
+    # if ! echo "$content" | sha256sum -c --status <(sha256sum Favorite_URL.txt); then
+        # # 如果内容不一致，覆盖写入新内容
+        # echo "$content" > Favorite_URL.txt
+    # fi
+# fi
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
