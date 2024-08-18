@@ -130,6 +130,23 @@ done
 # http://example1.com
 # EOL
 
+content="http://example1.com
+http://example12.com
+http://example122.com
+http://example1222.com
+http://example12222.com
+http://example122.com"
+
+if [ ! -f "Favorite_URL.txt" ]; then
+    # 文件不存在，创建文件并写入内容
+    echo "$content" > Favorite_URL.txt
+else
+    # 文件存在，检查内容是否一致
+    if ! echo "$content" | sha256sum -c --status <(sha256sum Favorite_URL.txt); then
+        # 如果内容不一致，覆盖写入新内容
+        echo "$content" > Favorite_URL.txt
+    fi
+fi
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
