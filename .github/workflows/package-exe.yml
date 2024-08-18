@@ -300,7 +300,7 @@ jobs:
             git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
             git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER
             echo "push_former=true" >> $GITHUB_ENV
-        fi
+        fi || exit 0
         
         
     - name: 发布固件
