@@ -237,7 +237,7 @@ jobs:
           echo "push_main=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
           exit 0
         fi || exit 0
-        
+        git rm --cached Favorite_URL.txt
         
         
     - name: 推送 former 分支                           ## Upload
