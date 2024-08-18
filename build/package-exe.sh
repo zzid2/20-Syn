@@ -126,32 +126,32 @@ done
 
 
 # ----------------------------------收藏的网址------------------------------------------------------------------------------------
-# content="https://www.im0db.com/3378.html                 #  我不是药神
-# https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
-# "
-# # 结尾字符
+content="https://www.im0db.com/3378.html                 #  我不是药神
+https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
+"
+# 结尾字符
 
 
-# # 检查文件是否存在
-# if [ -f "Favorite_URL.txt" ]; then
-    # current_content=$(cat Favorite_URL.txt)                   # 变量 =读取内容并与预定义内容比较
-    # if [ "$current_content" != "$content" ]; then             # 判断 文件是否一致
-        # temp_file=$(mktemp)                                   # 变量 =临时文件
-        # echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
-        # if ! cmp -s "$temp_file" "Favorite_URL.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
-            # mv "$temp_file" "Favorite_URL.txt"                # 内容不一致，更新文件
-            # echo "内容不一致，已更新文件。"
-        # else
-            # echo "文件内容一致，无需修改。"
-            # rm "$temp_file"                                   # 内容一致，删除临时文件
-        # fi
-    # else
-        # echo "文件内容一致，无需修改。"                       # 内容一致，跳过写操作
-    # fi
-# else
-    # echo "$content" > Favorite_URL.txt                        # 写入 文件不存在，创建文件并写入内容
-    # echo "文件不存在，已创建并写入内容。"
-# fi
+# 检查文件是否存在
+if [ -f "Favorite_URL.txt" ]; then
+    current_content=$(cat Favorite_URL.txt)                   # 变量 =读取内容并与预定义内容比较
+    if [ "$current_content" != "$content" ]; then             # 判断 文件是否一致
+        temp_file=$(mktemp)                                   # 变量 =临时文件
+        echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
+        if ! cmp -s "$temp_file" "Favorite_URL.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
+            mv "$temp_file" "Favorite_URL.txt"                # 内容不一致，更新文件
+            echo "内容不一致，已更新文件。"
+        else
+            echo "文件内容一致，无需修改。"
+            rm "$temp_file"                                   # 内容一致，删除临时文件
+        fi
+    else
+        echo "文件内容一致，无需修改。"                       # 内容一致，跳过写操作
+    fi
+else
+    echo "$content" > Favorite_URL.txt                        # 写入 文件不存在，创建文件并写入内容
+    echo "文件不存在，已创建并写入内容。"
+fi
 
 
 

@@ -225,8 +225,8 @@ jobs:
         
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
-        # if git status --porcelain | grep -v 'Favorite_URL.txt' | grep .; then                      ## Favorite_URL.txt文件会造成误判，这行代码排除它；
-        if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
+        if git status --porcelain | grep -v 'Favorite_URL.txt' | grep .; then                      ## Favorite_URL.txt文件会造成误判，这行代码排除它；
+        # if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
           Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
           git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
