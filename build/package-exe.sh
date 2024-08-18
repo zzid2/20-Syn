@@ -126,119 +126,38 @@ done
 
 
 # ----------------------------------收藏的网址------------------------------------------------------------------------------------
-# cat <<EOL > Favorite_URL.txt
-# http://example1.com
-# EOL
+content="
+https://www.im0db.com/3378.html                          #  我不是药神
+https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
 
-content="http://example1.com
-http://example12.com
-http://example122.com
-http://example1222.com
-http://example12222.com
-http://example122.com"
-
+"
+# 结尾字符
 
 
 # 检查文件是否存在
 if [ -f "Favorite_URL.txt" ]; then
-    # 文件存在，读取内容并与预定义内容比较
-    current_content=$(cat Favorite_URL.txt)
-
+    current_content=$(cat Favorite_URL.txt)                   # 文件存在，读取内容并与预定义内容比较
     if [ "$current_content" != "$content" ]; then
-        # 使用临时文件来避免不必要的写操作
-        temp_file=$(mktemp)
-        echo "$content" > "$temp_file"
-
-        # 仅当内容有真正的差异时才进行写入操作
-        if ! cmp -s "$temp_file" "Favorite_URL.txt"; then
-            mv "$temp_file" "Favorite_URL.txt"
+        temp_file=$(mktemp)                                   # 使用临时文件来避免不必要的写操作
+        echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
+        if ! cmp -s "$temp_file" "Favorite_URL.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
+            mv "$temp_file" "Favorite_URL.txt"                # 内容不一致，更新文件
             echo "内容不一致，已更新文件。"
         else
             echo "文件内容一致，无需修改。"
-            rm "$temp_file" # 删除临时文件
+            rm "$temp_file"                                   # 内容一致，删除临时文件
         fi
     else
-        # 内容一致，跳过写操作
-        echo "文件内容一致，无需修改。"
+        echo "文件内容一致，无需修改。"                       # 内容一致，跳过写操作
     fi
 else
-    # 文件不存在，创建文件并写入内容
-    echo "$content" > Favorite_URL.txt
+    echo "$content" > Favorite_URL.txt                        # 写入 文件不存在，创建文件并写入内容
     echo "文件不存在，已创建并写入内容。"
 fi
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-# if [ -f "Favorite_URL.txt" ]; then
-    # # 文件存在，读取内容并与预定义内容比较
-    # current_content=$(cat Favorite_URL.txt)
-    
-    # if [ "$current_content" != "$content" ]; then
-        # # 内容不一致，且文件确实有改动时才覆盖写入
-        # if ! cmp -s <(echo "$content") Favorite_URL.txt; then
-            # echo "$content" > Favorite_URL.txt
-            # echo "内容不一致，已更新文件。"
-        # fi
-    # else
-        # # 内容一致，跳过写操作
-        # echo "文件内容一致，无需修改。"
-    # fi
-# else
-    # # 文件不存在，创建文件并写入内容
-    # echo "$content" > Favorite_URL.txt
-    # echo "文件不存在，已创建并写入内容。"
-# fi
-
-
-
-
-
-
-# # 检查文件是否存在
-# if [ -f "Favorite_URL.txt" ]; then
-    # # 文件存在，读取内容并与预定义内容比较
-    # current_content=$(cat Favorite_URL.txt)
-    
-    # if [ "$current_content" != "$content" ]; then
-        # # 内容不一致，覆盖写入新内容
-        # echo "$content" > Favorite_URL.txt
-        # echo "内容不一致，已更新文件。"
-    # else
-        # # 内容一致，跳过写操作
-        # echo "文件内容一致，无需修改。"
-    # fi
-# else
-    # # 文件不存在，创建文件并写入内容
-    # echo "$content" > Favorite_URL.txt
-    # echo "文件不存在，已创建并写入内容。"
-# fi
-
-
-
-# if [ ! -f "Favorite_URL.txt" ]; then
-    # # 文件不存在，创建文件并写入内容
-    # echo "$content" > Favorite_URL.txt
-# else
-    # # 文件存在，检查内容是否一致
-    # if ! echo "$content" | sha256sum -c --status <(sha256sum Favorite_URL.txt); then
-        # # 如果内容不一致，覆盖写入新内容
-        # echo "$content" > Favorite_URL.txt
-    # fi
-# fi
-
 # --------------------------------------------------------------------------------------------------------------------------------
-
 
 
 rm -rf ./*/.git ./*/.gitattributes ./*/.svn ./*/.github ./*/.gitignore create_acl_for_luci.err create_acl_for_luci.ok create_acl_for_luci.warn      # 删除多余的文件，比如：.git   .gitattributes  .svn    .github   .gitignore
