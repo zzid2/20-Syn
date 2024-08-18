@@ -190,12 +190,12 @@ jobs:
         done
         
         
-        mkdir -p "package-exe"                                                                                         ## 创建“package-exe”目录，用于存放.tar.gz压缩包，
-        tar --exclude='.git' -czvf "package-exe"/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                 ## 压缩“former”文件夹（排除.git目录）
-        mv -f $REPO_BRANCH/"Backups-exe" "Backups-exe"                                                                 ## 移动 仓库发布资产“main/Backups-exe”至 Backups-exe 目录内
-        tar --exclude='.git' -czvf "package-exe"/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                 ## 压缩“main”  文件夹（排除.git目录）至 packages目录内
-        tar --exclude='.git' -czvf "package-exe"/"Backups-exe"_${{ env.date2 }}.tar.gz "Backups-exe"                   ## 压缩 仓库发布资产"Backups-exe”至 packages目录内
-        # cd "package-exe"
+        mkdir -p upload                                                                                                ## 创建 upload 目录，用于存放.tar.gz压缩包，
+        tar --exclude='.git' -czvf upload/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                        ## 压缩“former”文件夹（排除.git目录），存放至 upload 目录内
+        mv -f $REPO_BRANCH/"Backups-exe" "Backups-exe"                                                                 ## 移动 仓库发布资产“main/Backups-exe” 至当前主目录内
+        tar --exclude='.git' -czvf upload/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                        ## 压缩“main”  文件夹（排除.git目录） ，存放至 upload 目录内
+        tar --exclude='.git' -czvf upload/"Backups-exe"_${{ env.date2 }}.tar.gz "Backups-exe"                          ## 压缩 仓库发布资产"Backups-exe” ，存放至 upload 目录内
+        
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
         
@@ -272,7 +272,7 @@ jobs:
             ☆  常用插件
             -
             ☆  已经删库留存源码
-        files: ${{ env.PACKAGES }}/"package-exe"/*
+        files: ${{ env.PACKAGES }}/upload/*
         
         
         
