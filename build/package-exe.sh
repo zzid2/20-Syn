@@ -126,8 +126,7 @@ done
 
 
 # ----------------------------------收藏的网址------------------------------------------------------------------------------------
-content="
-https://www.im0db.com/3378.html                          #  我不是药神
+content="https://www.im0db.com/3378.html                          #  我不是药神
 https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
 
 "
@@ -136,9 +135,9 @@ https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
 
 # 检查文件是否存在
 if [ -f "Favorite_URL.txt" ]; then
-    current_content=$(cat Favorite_URL.txt)                   # 文件存在，读取内容并与预定义内容比较
-    if [ "$current_content" != "$content" ]; then
-        temp_file=$(mktemp)                                   # 使用临时文件来避免不必要的写操作
+    current_content=$(cat Favorite_URL.txt)                   # 变量 =读取内容并与预定义内容比较
+    if [ "$current_content" != "$content" ]; then             # 判断 文件是否一致
+        temp_file=$(mktemp)                                   # 变量 =临时文件
         echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
         if ! cmp -s "$temp_file" "Favorite_URL.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
             mv "$temp_file" "Favorite_URL.txt"                # 内容不一致，更新文件
