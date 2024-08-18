@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [package]                              ## 并行运行多任务
+        target: ["package-exe"]                              ## 并行运行多任务
         
     steps:
     
