@@ -142,7 +142,7 @@ if [ -f "Favorite_URL.txt" ]; then
     if [ "$current_content" != "$content" ]; then             # 判断 文件是否一致
         # temp_file=$(mktemp)                                   # 变量 =临时文件
         # echo "$content" > "$temp_file"                        # 写入 当前内容写入临时文件中
-        if ! cmp -s "$temp_file" "Favorite_URL_BAK.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
+        if ! cmp -s "$content" "Favorite_URL_BAK.txt"; then     # 判断 仅当内容有真正的差异时才进行写入操作
             mv "$content" "Favorite_URL.txt"                # 内容不一致，更新文件
 			rm Favorite_URL_BAK.txt
 			echo "内容不一致，已更新文件。"
