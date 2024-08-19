@@ -225,8 +225,8 @@ jobs:
         
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
-        git reset --hard      ## 确保工作区状态干净
-        git clean -fd
+        # git reset --hard      ## 确保工作区状态干净
+        # git clean -fd
         
         
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
