@@ -154,6 +154,32 @@ done
 # fi
 
 
+urls=(
+    "https://www.im0db.com/3378.html"
+    "https://pan.quark.cn/s/ede840ba6d9d#/list/share"
+    "https://example.com/url3"
+    "https://example.com/url4"
+    "https://example.com/url5"
+    "https://example.com/url6"
+    "https://example.com/url7"
+    "https://example.com/url8"
+    "https://example.com/url9"
+    "https://example.com/url10"
+)
+> $pwd_path/Favorite_URL.txt
+for url in "${urls[@]}"; do
+    echo "$url" >> $pwd_path/Favorite_URL.txt
+done
+
+cd $pwd_path  # 确保在正确的目录下运行 git 命令
+
+if git status --porcelain | grep Favorite_URL.txt; then
+    echo "Favorite_URL.txt 文件已更新"
+else
+    echo "Favorite_URL.txt 文件无变化"
+fi
+
+
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
