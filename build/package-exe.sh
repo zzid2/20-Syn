@@ -128,12 +128,6 @@ done
 # ----------------------------------收藏的网址------------------------------------------------------------------------------------
 
 # 创建 .gitignore 文件，忽略临时文件和目录
-cat <<EOL > .gitignore
-Favorite_URL.txt
-upload/
-*.tar.gz
-EOL
-
 
 content="https://www.im0db.com/3378.html                 #  我不是药神
 https://pan.quark.cn/s/ede840ba6d9d#/list/share          # 我不是药神
