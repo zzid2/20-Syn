@@ -232,6 +232,7 @@ jobs:
         # if git status --porcelain | grep -v 'Favorite_URL.txt' | grep .; then                      ## Favorite_URL.txt文件会造成误判，这行代码排除它；
         
         # if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
+        
         if git diff --exit-code > /dev/null; then
           git add .
           Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
