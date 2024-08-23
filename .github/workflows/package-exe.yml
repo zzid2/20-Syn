@@ -122,7 +122,12 @@ jobs:
         
         git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
-        echo "这是一个存放删库的目录" > former.txt
+        if [ ! -f "$REPO_FORMER/former.txt" ]; then
+            echo "former.txt文件不存在，正在创建..."
+            echo "这是一个存放删库的目录" > former.txt
+        else
+            echo "former.txt文件已存在"
+        fi
         
         
         
@@ -251,14 +256,17 @@ jobs:
         if git diff --quiet; then
             echo "没有什么可提交的"
             echo "push_main=false" >> $GITHUB_ENV
-            exit 0
         else
-            git add .
-            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
-            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
-            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH
-            echo "push_main=true" >> $GITHUB_ENV
             echo "有可提交的"
+            echo "push_main=true" >> $GITHUB_ENV
+            git add .
+            if git diff --cached --quiet; then
+                echo "没有文件需要提交"
+            else
+                Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
+                git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
+                git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH
+            fi
         fi
         
         
