@@ -260,7 +260,7 @@ jobs:
         
         
         # if git status --porcelain | grep .; then
-        if git status --porcelain | grep '^[^?]' | grep .; then
+        if git status --porcelain | grep -q '^[ACDMRT]'; then
             echo "有可提交的"
             echo "push_main=true" >> $GITHUB_ENV
             git add .
