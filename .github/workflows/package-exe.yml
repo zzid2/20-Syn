@@ -248,18 +248,22 @@ jobs:
         #### git rm --cached Favorite_URL.txt
         
         
-        if git status --porcelain | grep .; then
-            echo "没有什么可提交的"
-            echo "push_main=false" >> $GITHUB_ENV
-            exit 0
-        else
+        if git diff --quiet; then
             git add .
             Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
             git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
             git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH
             echo "push_main=true" >> $GITHUB_ENV
             echo "有可提交的"
+        else
+            echo "没有什么可提交的"
+            echo "push_main=false" >> $GITHUB_ENV
         fi
+
+#            exit 0
+
+
+
         
         
         
