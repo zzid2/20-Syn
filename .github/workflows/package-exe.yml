@@ -258,9 +258,10 @@ jobs:
         else
             echo "没有什么可提交的"
             echo "push_main=false" >> $GITHUB_ENV
+            exit 0
         fi
 
-#            exit 0
+
 
 
 
