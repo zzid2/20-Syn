@@ -359,7 +359,8 @@ jobs:
         
     - name: 删除旧发布版本            ## Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.3.4          ## https://github.com/dev-drprasad/delete-older-releases
-      if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      # if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      if: env.push_main == 'true' || env.push_former == 'true'
       with:
         keep_latest: 30            ## 保留最少数（默认值：3）
         delete_tags: true
