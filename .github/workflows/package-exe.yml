@@ -259,7 +259,8 @@ jobs:
         
         
         
-        if git status --porcelain | grep .; then
+        # if git status --porcelain | grep .; then
+        if ! git diff --quiet || ! git diff --cached --quiet; then
             echo "有可提交的"
             echo "push_main=true" >> $GITHUB_ENV
             git add .
