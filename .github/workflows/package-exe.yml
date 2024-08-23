@@ -248,8 +248,7 @@ jobs:
         
         # if git diff --quiet; then
         
-        
-        
+               
         
         
         # if git status --porcelain | grep .; then
