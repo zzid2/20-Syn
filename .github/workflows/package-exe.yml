@@ -259,7 +259,7 @@ jobs:
         
         
         
-        if git status --porcelain | grep .; then
+        if ! git status --porcelain | grep .; then
             echo "没有什么可提交的"
             echo "push_main=false" >> $GITHUB_ENV
         else
