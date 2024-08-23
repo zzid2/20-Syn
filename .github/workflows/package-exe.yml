@@ -248,7 +248,7 @@ jobs:
         #### git rm --cached Favorite_URL.txt
         
         
-        if git diff --quiet; then
+        if ! git diff --quiet; then
             git add .
             Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
             git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
