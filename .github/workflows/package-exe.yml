@@ -247,7 +247,8 @@ jobs:
         # fi || exit 0
         #### git rm --cached Favorite_URL.txt
         
-        
+        git status
+        git diff
         if ! git diff --quiet; then
             git add .
             Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
