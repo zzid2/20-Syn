@@ -233,21 +233,33 @@ jobs:
         
         
         # if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
-        if git diff --exit-code > /dev/null; then
-          git add .
-          Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-          git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
-          echo "push_main=true" >> $GITHUB_ENV                                                     ## 如果有   推送插件，写入变量真
-          echo "有可提交的"
-        else
-          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
-          echo "push_main=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
-          exit 0
-        fi || exit 0
+        # if git diff --exit-code > /dev/null; then
+          # git add .
+          # Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+          # git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+          # git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
+          # echo "push_main=true" >> $GITHUB_ENV                                                     ## 如果有   推送插件，写入变量真
+          # echo "有可提交的"
+        # else
+          # echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
+          # echo "push_main=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
+          # exit 0
+        # fi || exit 0
         #### git rm --cached Favorite_URL.txt
         
         
+        if git diff --quiet; then
+            echo "没有什么可提交的"
+            echo "push_main=false" >> $GITHUB_ENV
+            exit 0
+        else
+            git add .
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH
+            echo "push_main=true" >> $GITHUB_ENV
+            echo "有可提交的"
+        fi
         
         
         
@@ -300,6 +312,18 @@ jobs:
         
         
         
+        if git diff --quiet; then
+            echo "没有什么可提交的"
+            echo "push_former=false" >> $GITHUB_ENV
+            exit 0
+        else
+            git add .
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER
+            echo "push_former=true" >> $GITHUB_ENV
+            echo "有可提交的"
+        fi
         
         
         
