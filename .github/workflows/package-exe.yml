@@ -265,7 +265,7 @@ jobs:
             echo "push_main=true" >> $GITHUB_ENV
             git add .
             Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
-            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)" || true
             git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH
         else
             echo "没有什么可提交的"
