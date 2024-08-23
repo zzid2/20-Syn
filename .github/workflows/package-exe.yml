@@ -228,6 +228,15 @@ jobs:
         
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
+        git fetch origin   # 获取上游分支的最新状态
+        if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/$REPO_BRANCH)" ]; then
+            echo "分支与上游一致"
+            echo "push_main=false" >> $GITHUB_ENV
+        else
+            echo "分支与上游不一致"
+            echo "push_main=true" >> $GITHUB_ENV
+        fi
+        
         if git status --porcelain | grep .; then
             echo "与上游不一致"
             git add .
@@ -246,14 +255,7 @@ jobs:
             exit 0
         fi || exit 0
         
-        git fetch origin   # 获取上游分支的最新状态
-        if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/$REPO_BRANCH)" ]; then
-            echo "分支与上游一致"
-            echo "push_main=false" >> $GITHUB_ENV
-        else
-            echo "分支与上游不一致"
-            echo "push_main=true" >> $GITHUB_ENV
-        fi
+        
         
     - name: 推送 former 分支                           ## Upload
       env: 
