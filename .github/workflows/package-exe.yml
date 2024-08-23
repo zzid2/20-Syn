@@ -234,6 +234,12 @@ jobs:
             Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
             git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
             git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
+            if [ $? -eq 0 ]; then
+                echo "222"
+                echo "push_main=true" >> $GITHUB_ENV
+            else
+                echo "111"
+                echo "push_main=false" >> $GITHUB_ENV
         else
             echo "与上游一致"                                                                 ## 反之提示： “没有什么可提交的”
             exit 0
