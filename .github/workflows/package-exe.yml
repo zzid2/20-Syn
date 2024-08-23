@@ -230,10 +230,10 @@ jobs:
         
         
         # if git status --porcelain | grep -v 'Favorite_URL.txt' | grep .; then                      ## Favorite_URL.txt文件会造成误判，这行代码排除它；
+        # if git diff --exit-code > /dev/null; then
         
-        # if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
         
-        if git diff --exit-code > /dev/null; then
+        if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
           git add .
           Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
           git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
@@ -298,7 +298,8 @@ jobs:
         
     - name: 发布固件
       uses: softprops/action-gh-release@v2
-      if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      # if: github.event.inputs.release == 'true' && (env.push_main == 'true' || env.push_former == 'true')
+      if: env.push_main == 'true' || env.push_former == 'true'
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       with:
