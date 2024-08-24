@@ -228,32 +228,47 @@ jobs:
         
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
-        git fetch origin   # 获取上游分支的最新状态
-        if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/$REPO_BRANCH)" ]; then
-            echo "分支与上游一致"
-            echo "push_main=false" >> $GITHUB_ENV
-        else
+        if git status --porcelain | grep .; then
             echo "分支与上游不一致"
             echo "push_main=true" >> $GITHUB_ENV
+        else
+            echo "分支与上游一致"
+            echo "push_main=false" >> $GITHUB_ENV
         fi
         
-        if git status --porcelain | grep .; then
-            echo "与上游不一致"
-            git add .
-            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
-            # if [ $? -eq 0 ]; then
-                # echo "222"
-                # echo "push_main=true" >> $GITHUB_ENV
-            # else
-                # echo "111"
-                # echo "push_main=false" >> $GITHUB_ENV
-            # fi
-        else
-            echo "与上游一致"                                                                 ## 反之提示： “没有什么可提交的”
-            exit 0
-        fi || exit 0
+        
+        
+        
+        
+        
+        
+        
+        # git fetch origin   # 获取上游分支的最新状态
+        # if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/$REPO_BRANCH)" ]; then
+            # echo "分支与上游一致"
+            # echo "push_main=false" >> $GITHUB_ENV
+        # else
+            # echo "分支与上游不一致"
+            # echo "push_main=true" >> $GITHUB_ENV
+        # fi
+        
+        # if git status --porcelain | grep .; then
+            # echo "与上游不一致"
+            # git add .
+            # Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+            # git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+            # git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
+            # # if [ $? -eq 0 ]; then
+                # # echo "222"
+                # # echo "push_main=true" >> $GITHUB_ENV
+            # # else
+                # # echo "111"
+                # # echo "push_main=false" >> $GITHUB_ENV
+            # # fi
+        # else
+            # echo "与上游一致"                                                                 ## 反之提示： “没有什么可提交的”
+            # exit 0
+        # fi || exit 0
         
         
         
