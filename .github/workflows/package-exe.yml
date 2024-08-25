@@ -1,5 +1,5 @@
 
-## 创建“20-Syn”仓库--->>此仓库“绑定ACCESS_TOKEN令牌值”--->>添加"工作流执行权限"--->>手动创建“GitHub Actions”工作流--->>上传所有源码。
+## 创建“20-Syn”仓库--->>此仓库“绑定ACCESS_TOKEN令牌值”（和SCKEY===微信通知密钥）--->>添加"工作流执行权限"--->>手动创建“GitHub Actions”工作流--->>上传所有源码。
 ## 创建“luci-app”仓库--->>上传任意源码文件。
 ## 首先手动运行一次“20-Syn”工作流。
 
@@ -146,15 +146,16 @@ jobs:
         
         
         ## 比较main和former目录，在重复的former子目录后追加后缀；
-        for item in $REPO_BRANCH/*; do                                                                                ## 遍历 main 目录内所有文件目录，
-            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
-                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"         ## 重命名 former 目录内重复的子目录，追加后缀名；
-                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"
-            fi
-        done
+        # for item in $REPO_BRANCH/*; do                                                                                ## 遍历 main 目录内所有文件目录，
+            # if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+                # mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"         ## 重命名 former 目录内重复的子目录，追加后缀名；
+                # echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"
+            # fi
+        # done
         
         
         rsync -av --exclude='.git' $REPO_BRANCH/ $REPO_FORMER/                                     ## 同步 复制“main”目录内文件 到“former”目录内，并排除 .git目录
+        
         
         chmod +x build/${{matrix.target}}.sh                                                       ## 增加 “build/main.sh”脚本可执行权限
         cd $REPO_BRANCH                                                                            ## cd 进入 main 目录
@@ -228,47 +229,18 @@ jobs:
         
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
-        if git status --porcelain | grep .; then
-            echo "分支与上游不一致"
-            echo "push_main=true" >> $GITHUB_ENV
+        if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
+            echo "有更新，需要提交"
+            echo "push_main=true" >> $GITHUB_ENV                                                   ## 有更新 写入变量真
+            git add .
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
         else
-            echo "分支与上游一致"
-            echo "push_main=false" >> $GITHUB_ENV
-        fi
-        
-        
-        
-        
-        
-        
-        
-        
-        # git fetch origin   # 获取上游分支的最新状态
-        # if [ "$(git rev-parse HEAD)" = "$(git rev-parse origin/$REPO_BRANCH)" ]; then
-            # echo "分支与上游一致"
-            # echo "push_main=false" >> $GITHUB_ENV
-        # else
-            # echo "分支与上游不一致"
-            # echo "push_main=true" >> $GITHUB_ENV
-        # fi
-        
-        # if git status --porcelain | grep .; then
-            # echo "与上游不一致"
-            # git add .
-            # Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-            # git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-            # git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
-            # # if [ $? -eq 0 ]; then
-                # # echo "222"
-                # # echo "push_main=true" >> $GITHUB_ENV
-            # # else
-                # # echo "111"
-                # # echo "push_main=false" >> $GITHUB_ENV
-            # # fi
-        # else
-            # echo "与上游一致"                                                                 ## 反之提示： “没有什么可提交的”
-            # exit 0
-        # fi || exit 0
+            echo "无更新，无需提交"
+            echo "push_main=false" >> $GITHUB_ENV                                                  ## 无更新 写入变量假
+            exit 0
+        fi || exit 0
         
         
         
@@ -280,60 +252,17 @@ jobs:
         cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到“former”目录内
         
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
-          git add .
-          Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-          git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
-          echo "push_former=true" >> $GITHUB_ENV                                                   ## 如果有   推送插件，写入变量真
-          echo "有可提交的"
-        else
-          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
-          echo "push_former=false" >> $GITHUB_ENV                                                  ## 如果没有 推送插件，写入变量假
-          exit 0
-        fi || exit 0
-        
-        
-        
-        
-        if git diff --quiet; then
-            echo "没有什么可提交的"
-            echo "push_former=false" >> $GITHUB_ENV
-            exit 0
-        else
+            echo "有更新，需要提交"
+            echo "push_former=true" >> $GITHUB_ENV                                                 ## 有更新 写入变量真
             git add .
-            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
-            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
-            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER
-            echo "push_former=true" >> $GITHUB_ENV
-            echo "有可提交的"
-        fi
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        # if git diff --quiet HEAD -- . ':!Favorite_URL.txt'; then
-            # echo "没有文件更改，无需提交"
-            # echo "push_former=false" >> $GITHUB_ENV
-            # exit 0
-        # else
-            # echo "有文件更改，准备提交"
-            # git add .
-            # Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")
-            # git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"
-            # git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER
-            # echo "push_former=true" >> $GITHUB_ENV
-        # fi || exit 0
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
+        else
+            echo "无更新，无需提交"
+            echo "push_former=false" >> $GITHUB_ENV                                                  ## 无更新 写入变量假
+            exit 0
+        fi || exit 0
         
         
         

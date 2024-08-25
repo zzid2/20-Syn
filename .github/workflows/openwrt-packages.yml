@@ -122,7 +122,12 @@ jobs:
         
         git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
-        echo "这是一个存放删库的目录" > former.txt
+        if [ ! -f "$REPO_FORMER/former.txt" ]; then
+            echo "former.txt文件不存在，正在创建..."
+            echo "这是一个存放删库的目录" > former.txt
+        else
+            echo "former.txt文件已存在"
+        fi
         
         
         
@@ -141,12 +146,12 @@ jobs:
         
         
         ## 比较main和former目录，在重复的former子目录后追加后缀；
-        for item in $REPO_BRANCH/*; do                                                                                ## 遍历 main 目录内所有文件目录，
-            if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
-                mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"         ## 重命名 former 目录内重复的子目录，追加后缀名；
-                echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"
-            fi
-        done
+        # for item in $REPO_BRANCH/*; do                                                                                ## 遍历 main 目录内所有文件目录，
+            # if [[ "$(basename "$item")" != ".git" && -e "$REPO_FORMER/$(basename "$item")" ]]; then                   ## 判断 former 目录内（排除.git目录） 是否有与main目录内重复的（子目录），
+                # mv "$REPO_FORMER/$(basename "$item")" "$REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"         ## 重命名 former 目录内重复的子目录，追加后缀名；
+                # echo "重命名重复项: $REPO_FORMER/$(basename "$item") 为 $REPO_FORMER/$(basename "$item")_bak_${{ env.date2 }}"
+            # fi
+        # done
         
         
         rsync -av --exclude='.git' $REPO_BRANCH/ $REPO_FORMER/                                     ## 同步 复制“main”目录内文件 到“former”目录内，并排除 .git目录
@@ -163,7 +168,6 @@ jobs:
         git rm -r --cache * >/dev/null 2>&1 &                                                      ## 删除 Git索引（缓存区）中所有文件和目录，但保留源码文件；
         
         rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1                      ## 删除 当前目录内所有文件，但排除"build"目录；
-        
         
         
         ## 第二次单独下载最新版插件
@@ -193,7 +197,6 @@ jobs:
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
         tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                      ## 压缩“main”  文件夹（排除.git目录）
-        # cd packages
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
         
         
@@ -224,15 +227,16 @@ jobs:
         cd $GITHUB_WORKSPACE/$REPO_BRANCH                                                          ## 进入到main目录内
         
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
-          git add .
-          Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-          git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
-          echo "push_main=true" >> $GITHUB_ENV                                                     ## 如果有   推送插件，写入变量真
+            echo "有更新，需要提交"
+            echo "push_main=true" >> $GITHUB_ENV                                                   ## 有更新 写入变量真
+            git add .
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_BRANCH                   ## 上传仓库的地址（新创建的仓库）
         else
-          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
-          echo "push_main=false" >> $GITHUB_ENV                                                    ## 如果没有 推送插件，写入变量假
-          exit 0
+            echo "无更新，无需提交"
+            echo "push_main=false" >> $GITHUB_ENV                                                  ## 无更新 写入变量假
+            exit 0
         fi || exit 0
         
         
@@ -245,15 +249,16 @@ jobs:
         cd $GITHUB_WORKSPACE/$REPO_FORMER                                                          ## 进入到“former”目录内
         
         if git status --porcelain | grep .; then                                                   ## 判断！ 当插件有更新差异时，提交，
-          git add .
-          Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
-          git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
-          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
-          echo "push_former=true" >> $GITHUB_ENV                                                   ## 如果有   推送插件，写入变量真
+            echo "有更新，需要提交"
+            echo "push_former=true" >> $GITHUB_ENV                                                 ## 有更新 写入变量真
+            git add .
+            Emoji=("🌸" "🐌" "🌿" "⛅" "🍂" "💦" "💤" "💭" "🍭" "🎉" "🎁" "🎈" "🐾" "🎨" "💋" "🍓" "🍕" "🍉" "🙈" "🤡" "🍡")              ## 随机表情
+            git commit -am "${Emoji[$[$RANDOM % ${#Emoji[@]}]]} 更新时间 $(date +%Y-%m-%d" "%H:%M:%S)"                                     ## 提交更改，提交信息包含随机表情和当前日期时间
+            git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/$AUTHOR_ID/$CangKu_ID.git" HEAD:$REPO_FORMER                   ## 上传仓库的地址（新创建的仓库）
         else
-          echo "没有什么可提交的"                                                                 ## 反之提示： “没有什么可提交的”
-          echo "push_former=false" >> $GITHUB_ENV                                                  ## 如果没有 推送插件，写入变量假
-          exit 0
+            echo "无更新，无需提交"
+            echo "push_former=false" >> $GITHUB_ENV                                                  ## 无更新 写入变量假
+            exit 0
         fi || exit 0
         
         
