@@ -214,8 +214,8 @@ jobs:
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
-        # path: ${{ github.workspace }}                  ## 当前仓库运行路径
-        path: ./main
+        path: ${{ github.workspace }}                  ## 当前仓库运行路径
+        # path: ./main
         
         
     - name: 推送 main 分支                             ## Upload
