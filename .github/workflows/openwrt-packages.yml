@@ -214,7 +214,7 @@ jobs:
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
-        path: ./main                  ## 当前仓库运行路径
+        path: former/former.txt                  ## 当前仓库运行路径
         
         
         
