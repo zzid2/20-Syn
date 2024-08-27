@@ -71,6 +71,11 @@ jobs:
     - name: 安装编译环境                               ## Initialization environment
       run : |
         # sudo chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build
+        if [ -d "/home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build" ]; then
+            sudo chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build
+        else
+            echo "Directory does not exist, skipping chmod."
+        fi
         
         pwd && ls
         
