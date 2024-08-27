@@ -231,7 +231,26 @@ jobs:
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
-        path: ${{ github.workspace }}/packages                  ## 当前仓库运行路径
+        path: ${{ github.workspace }}/build                  ## 当前仓库运行路径
+        
+    - name: Upload former directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: Former_Directory
+        path: ${{ github.workspace }}/former
+        
+    - name: Upload main directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: Main_Directory
+        path: ${{ github.workspace }}/main
+        
+        
+    - name: Upload packages directory
+      uses: actions/upload-artifact@v4
+      with:
+        name: Packages_Directory
+        path: ${{ github.workspace }}/packages
         
         
         
