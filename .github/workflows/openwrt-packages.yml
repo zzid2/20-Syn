@@ -225,7 +225,7 @@ jobs:
     - name: List workspace contents
       run: |
         ls -la ${{ github.workspace }}
-        
+        sudo chmod -R 755 ${{ github.workspace }}
         
     - name: 上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
