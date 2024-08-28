@@ -226,26 +226,26 @@ jobs:
       run: |
         ls -la ${{ github.workspace }}
         sudo chmod -R 755 ${{ github.workspace }}
-        
-    - name: 上传全部源码                                                                           ## Upload bin directory
+        chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/
+    - name: 1-上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
         path: ${{ github.workspace }}/build                  ## 当前仓库运行路径
         
-    - name: 上传 former
+    - name: 2-上传 former
       uses: actions/upload-artifact@v4
       with:
         name: former
         path: ${{ github.workspace }}/former
         
-    - name: 上传 packages
+    - name: 3-上传 packages
       uses: actions/upload-artifact@v4
       with:
         name: Packages
         path: ${{ github.workspace }}/packages
         
-    - name: 上传 main
+    - name: 4-上传 main
       uses: actions/upload-artifact@v4
       with:
         name: Main
