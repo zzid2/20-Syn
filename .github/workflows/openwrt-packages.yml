@@ -222,7 +222,7 @@ jobs:
         
         
         
-    - name: List workspace contents
+    - name: 查看当前目录
       run: |
         ls -la ${{ github.workspace }}
         sudo chmod -R 755 ${{ github.workspace }}
@@ -239,20 +239,17 @@ jobs:
         name: former
         path: ${{ github.workspace }}/former
         
-    - name: 上传 main
-      uses: actions/upload-artifact@v4
-      with:
-        name: Main
-        path: ${{ github.workspace }}/main
-        
-        
     - name: 上传 packages
       uses: actions/upload-artifact@v4
       with:
         name: Packages
         path: ${{ github.workspace }}/packages
         
-        
+    - name: 上传 main
+      uses: actions/upload-artifact@v4
+      with:
+        name: Main
+        path: ${{ github.workspace }}/main
         
     - name: 推送 main 分支                             ## Upload
       env: 
