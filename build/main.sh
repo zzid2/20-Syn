@@ -137,7 +137,7 @@ git clone --depth=1 https://github.com/jerrykuku/lua-maxminddb lua-maxminddb    
 
 git clone --depth=1 https://github.com/ylqjgm/mknop   mknop                               # 自动构建斐讯 N1、微加云、贝壳云、我家云、S905x3( X96 Max Plus, HK1 Box ) OpenWrt 固件脚本
 
-git clone --depth=1 https://github.com/DavidDen/mknop "mknop_2"                             # 斐讯N1一键制作OpenWrt镜像脚本
+# git clone --depth=1 https://github.com/DavidDen/mknop "mknop_2"                             # 斐讯N1一键制作OpenWrt镜像脚本
 
 
 
