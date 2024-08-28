@@ -226,7 +226,7 @@ jobs:
       run: |
         ls -la ${{ github.workspace }}
         sudo chmod -R 755 ${{ github.workspace }}
-        chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/
+        # chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/
     - name: 1-上传全部源码                                                                           ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
