@@ -219,31 +219,40 @@ jobs:
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
-        path: ${{ github.workspace }}                  ## 当前仓库运行路径
+        path: |
+            ${{ github.workspace }}                    ## 当前仓库运行路径
+            !${{ github.workspace }}/build             ## 排除
+    # - name: 上传 Build
+      # uses: actions/upload-artifact@v4
+      # with:
+        # name: Build
+        # path: ${{ github.workspace }}/build
         
-    - name: 上传 Build
-      uses: actions/upload-artifact@v4
-      with:
-        name: Build
-        path: ${{ github.workspace }}/build
+    # - name: 上传 Former
+      # uses: actions/upload-artifact@v4
+      # with:
+        # name: Former
+        # path: ${{ github.workspace }}/former
         
-    - name: 上传 Former
-      uses: actions/upload-artifact@v4
-      with:
-        name: Former
-        path: ${{ github.workspace }}/former
+    # - name: 上传 Packages
+      # uses: actions/upload-artifact@v4
+      # with:
+        # name: Packages
+        # path: ${{ github.workspace }}/packages
         
-    - name: 上传 Packages
-      uses: actions/upload-artifact@v4
-      with:
-        name: Packages
-        path: ${{ github.workspace }}/packages
+    # - name: 上传 Main
+      # uses: actions/upload-artifact@v4
+      # with:
+        # name: Main
+        # path: ${{ github.workspace }}/main
         
-    - name: 上传 Main
+    - name: 上传多个目录
       uses: actions/upload-artifact@v4
       with:
         name: Main
-        path: ${{ github.workspace }}/main
+        path: |
+            ${{ github.workspace }}/build
+            ${{ github.workspace }}/former
         
     - name: 推送 main 分支                             ## Upload
       env: 
