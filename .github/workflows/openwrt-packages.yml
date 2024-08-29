@@ -221,8 +221,8 @@ jobs:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
         path: |
             ${{ github.workspace }}/                    ## 当前仓库运行路径
-            # !${{ github.workspace }}/.git              ## ！排除目录
-            # !${{ github.workspace }}/start_time.txt
+#            # !${{ github.workspace }}/.git              ## ！排除目录
+#            # !${{ github.workspace }}/start_time.txt
             
             
             
