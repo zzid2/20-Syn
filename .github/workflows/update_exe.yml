@@ -4,7 +4,7 @@
 ## 首先手动运行一次“20-Syn”工作流。
 
 
-name: Package-exe                                      ## Actions工作流的名称
+name: 备份_exe程序                                     ## Actions工作流的名称
 on:
   workflow_dispatch:                                   ## 工作流程_调度
     inputs:
@@ -29,7 +29,7 @@ on:
     branches:
       - main                                           ## 确保只在 main 分支有改动时，触发编译
     paths:                                             ## 当指定文件“修改变动时” 触发编译
-      - '.github/workflows/package-exe.yml'            ## 默认是"package.yml"文件变动时 触发编译
+      - '.github/workflows/update_exe.yml'            ## 默认是"package.yml"文件变动时 触发编译
       - 'package-exe.sh'                               ## 默认是"package.sh"文件变动时  触发编译
       
       
@@ -47,7 +47,7 @@ jobs:
     if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id     ## 只有仓库所有者才能使用  “点 Star启动编译”
     
     
-    name: 更新package-exe                                  ## 运行工作流的名称 Update openwrt-packages
+    name: 更新_update_exe                                  ## 运行工作流的名称 Update openwrt-packages
     strategy:
       fail-fast: false
       matrix:
