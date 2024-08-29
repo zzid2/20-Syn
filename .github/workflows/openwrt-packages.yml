@@ -62,21 +62,14 @@ jobs:
         fetch-depth: 0
         
         
-        
-    - name: Set up Node.js                               ## 设置 Node.js 环境
+    - name: 配置Node.js环境版本                        ## 更新 Node.js 版本
       uses: actions/setup-node@v4
       with:
-        node-version: '20'                              ## Node.js 版本
-       
+        node-version: '20'                             ## v20 版本号
+        
+        
     - name: 安装编译环境                               ## Initialization environment
       run : |
-        # sudo chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build
-        # if [ -d "/home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build" ]; then
-            # sudo chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/build
-        # else
-            # echo "Directory does not exist, skipping chmod."
-        # fi
-        
         pwd && ls
         
         AUTHOR_ID=$(echo $CangKu_URL | awk -F'/' '{print $(NF-1)}')                                ## 作者ID，如：zzid2
@@ -222,30 +215,31 @@ jobs:
         
         
         
-    - name: 查看当前目录
-      run: |
-        ls -la ${{ github.workspace }}
-        sudo chmod -R 755 ${{ github.workspace }}
-        # chmod -R 755 /home/runner/work/20-Syn/20-Syn/main/mknop-2/armbian/rootfs/lib/modules/4.18.7-aml-s9xxx/
-    - name: 1-上传全部源码                                                                           ## Upload bin directory
+    - name: 上传源码压缩包                                                                         ## Upload bin directory
       uses: actions/upload-artifact@v4                                                             ## https://github.com/actions/upload-artifact
       with:
         name: ${{env.CangKu}}_${{ env.date2 }}         ## 文件名称
-        path: ${{ github.workspace }}/build                  ## 当前仓库运行路径
+        path: ${{ github.workspace }}                  ## 当前仓库运行路径
         
-    - name: 2-上传 former
+    - name: 上传 Build
       uses: actions/upload-artifact@v4
       with:
-        name: former
+        name: Build
+        path: ${{ github.workspace }}/build
+        
+    - name: 上传 Former
+      uses: actions/upload-artifact@v4
+      with:
+        name: Former
         path: ${{ github.workspace }}/former
         
-    - name: 3-上传 packages
+    - name: 上传 Packages
       uses: actions/upload-artifact@v4
       with:
         name: Packages
         path: ${{ github.workspace }}/packages
         
-    - name: 4-上传 main
+    - name: 上传 Main
       uses: actions/upload-artifact@v4
       with:
         name: Main
