@@ -232,7 +232,7 @@ jobs:
     - name: 上传多个源码压缩包
       uses: actions/upload-artifact@v4
       with:
-        name: ${{env.CangKu}}_${{ env.date2 }}_all         ## 文件名称
+        name: ${{env.CangKu}}_${{ env.date2 }}_exe         ## 文件名称
         path: |
             ${{ github.workspace }}/.github
             ${{ github.workspace }}/build
@@ -334,6 +334,7 @@ jobs:
         ELAPSED_MINUTES=$(awk -v start=$(cat start_time.txt) -v end=$(cat end_time.txt) 'BEGIN { elapsed = end - start; printf "%.2f", elapsed / 60 }')         ## = ELAPSED_MINUTES变量：计算运行时间，并保留两位小数点和保留前面有0
         echo "ELAPSED_MINUTES=$ELAPSED_MINUTES" >> $GITHUB_ENV                                                                                                  ## 总运行时间（分钟）写入变量： ELAPSED_MINUTES    ELAPSED_TIME
         rm -rf {start_time.txt,end_time.txt}
+        echo "总运行时间为 ${{ env.ELAPSED_MINUTES }} 分钟"
         
         
         

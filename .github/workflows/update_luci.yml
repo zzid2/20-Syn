@@ -201,8 +201,10 @@ jobs:
         
         mkdir -p packages                                                                                              ## 创建“packages”目录，用于存放.tar.gz压缩包，
         tar --exclude='.git' -czvf packages/"$REPO_FORMER"_${{ env.date2 }}.tar.gz "$REPO_FORMER"                      ## 压缩“former”文件夹（排除.git目录）
-        # tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"
-        tar --exclude='.git' -czvf - "$REPO_BRANCH" | split -b 2000M - "packages/${REPO_BRANCH}_${{ env.date2 }}.tar.gz.part-"      ## 拆分压缩“main”文件夹，最大文件不超过2GB，（排除.git目录）
+        
+        7z a -v2000m -t7z "packages/${{ env.REPO_BRANCH }}_${{ env.date2 }}.7z" "${{ env.REPO_BRANCH }}" -xr!.git      ## 使用 7-Zip 拆分压缩“main”文件夹，最大文件不超过2GB，（排除.git目录）
+        # tar --exclude='.git' -czvf packages/"$REPO_BRANCH"_${{ env.date2 }}.tar.gz "$REPO_BRANCH"                    ## 压缩“main”文件夹（排除.git目录）
+        # tar --exclude='.git' -czvf - "$REPO_BRANCH" | split -b 2000M - "packages/${REPO_BRANCH}_${{ env.date2 }}.tar.gz.part-"      ## 拆分压缩“main”文件夹，最大文件不超过2GB，（排除.git目录）
         # Windows 10系统中“CMD命令”合并拆分的文件：copy /b main_08.30.tar.gz.part-aa + main_08.30.tar.gz.part-ab main_08.30.tar.gz （copy /b "拆分文件aa" + "拆分文件bb" "合并后的文件名称"）
         
         echo "PACKAGES=$PWD" >> $GITHUB_ENV                                                                            ## 列表写入变量中
@@ -232,7 +234,7 @@ jobs:
     - name: 上传多个源码压缩包
       uses: actions/upload-artifact@v4
       with:
-        name: ${{env.CangKu}}_${{ env.date2 }}_all         ## 文件名称
+        name: ${{env.CangKu}}_${{ env.date2 }}_luci         ## 文件名称
         path: |
             ${{ github.workspace }}/.github
             ${{ github.workspace }}/build
@@ -332,7 +334,7 @@ jobs:
         ELAPSED_MINUTES=$(awk -v start=$(cat start_time.txt) -v end=$(cat end_time.txt) 'BEGIN { elapsed = end - start; printf "%.2f", elapsed / 60 }')         ## = ELAPSED_MINUTES变量：计算运行时间，并保留两位小数点和保留前面有0
         echo "ELAPSED_MINUTES=$ELAPSED_MINUTES" >> $GITHUB_ENV                                                                                                  ## 总运行时间（分钟）写入变量： ELAPSED_MINUTES    ELAPSED_TIME
         rm -rf {start_time.txt,end_time.txt}
-        
+        echo "总运行时间为 ${{ env.ELAPSED_MINUTES }} 分钟"
         
         
     - name: 结束_pushplus微信通知       ## Github设置里需添微信SCKEY=PUSHPLUS值

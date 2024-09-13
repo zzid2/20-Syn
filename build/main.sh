@@ -37,7 +37,7 @@ rm -rf $1
 
 ### 科学上网插件             ## 克隆到 .github 目录内, 与diy、workflows、同个路径
 git clone --depth 1 https://github.com/kiddin9/openwrt-packages && mv -n openwrt-packages/{luci-app-bypass,lua-maxminddb,lua-neturl} ./ ; rm -rf openwrt-packages     # 保留：luci-app-bypass + 插件依赖包
-mv {lua-maxminddb,lua-neturl} luci-app-bypass                                    # lua-maxminddb,lua-neturl 移动依赖包
+mv {lua-maxminddb,lua-neturl} luci-app-bypass                                  # lua-maxminddb,lua-neturl 移动依赖包
 ### git clone --depth 1 https://github.com/jerrykuku/lua-maxminddb.git																								  # luci-app-bypass插件的其中一个依赖包
 
 git clone --depth 1 https://github.com/vernesong/OpenClash.git && mv -n OpenClash/luci-app-openclash ./; rm -rf OpenClash                       # OenClash小猫咪
@@ -50,12 +50,12 @@ git clone --depth 1 -b main https://github.com/xiaorouji/openwrt-passwall-packag
 
 git clone --depth 1 https://github.com/fw876/helloworld luci-app-ssr-plus																		# luci-app-ssr-plus
 ### git clone --depth 1 https://github.com/fw876/helloworld && mv -n helloworld/{lua-neturl,shadow-tls,tuic-client,luci-app-ssr-plus} ./ ; rm -rf helloworld   # 保留：luci-app-ssr-plus + tuic-client + shadow-tls
-### mv {lua-neturl,shadow-tls,tuic-client} luci-app-ssr-plus                        # 移动 tuic-client + shadow-tls 文件
+### mv {lua-neturl,shadow-tls,tuic-client} luci-app-ssr-plus                      # 移动 tuic-client + shadow-tls 文件
 
 git clone -b main https://github.com/linkease/istore luci-app-store                                                                             # luci-app-store 开源软件中心（指定下载main分支）
 
 git clone --depth 1 https://github.com/destan19/OpenAppFilter.git OpenAppFilter && mv -n OpenAppFilter/{luci-app-oaf,oaf,open-app-filter} ./; rm -rf OpenAppFilter   # 下载OpenAppFilter 应用访问过滤
-mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter   # 移动OpenAppFilter文件
+mkdir -p OpenAppFilter && mv {luci-app-oaf,oaf,open-app-filter} OpenAppFilter     #移动OpenAppFilter文件
 
 git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-unblockneteasemusic.git                                           # 解锁网易云音乐
 ### https://github.com/immortalwrt/luci-app-unblockneteasemusic.git 
@@ -68,17 +68,21 @@ git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n Auto
 ### git clone --depth 1 https://github.com/kenzok78/luci-app-adguardhome																			# Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok8/wall.git && mv -n wall/{adguardhome,filebrowser,gost} ./; rm -rf wall			  	            # 保留：Adguardhome filebrowser（网盘） gost（gost VPN隧道）
 
-git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					    # Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
-mv alist luci-app-alist                                                         # 移动alist文件
+### git clone --depth 1 https://github.com/kuoruan/openwrt-frp.git openwrt-frp                                                                      # OpenWrt/LEDE 上可用的 Frp 客户端/服务端
+### 主菜单 Network  ---> Web Servers/Proxies  ---> <*> frpc                          # 编译菜单路径
+### 主菜单 Network  ---> Web Servers/Proxies  ---> <*> frps                          # 编译菜单路径
+
+git clone --depth 1 https://github.com/sbwml/luci-app-alist.git luci-alist && mv -n luci-alist/*alist ./ ; rm -rf luci-alist					# Alist阿雅网盘（注意：编译前需安装依赖：sudo apt install libfuse-dev）
+mv alist luci-app-alist                                                           # 移动alist文件
 ### https://github.com/lmq8267/luci-app-alist
 
-git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman               # Docker容器管理
-git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git                                                                                  # Diskman 磁盘分区管理
+git clone --depth 1 https://github.com/lisaac/luci-app-dockerman.git dockerman && mv -n dockerman/applications/* ./; rm -rf dockerman           # Docker容器管理
+git clone --depth 1 https://github.com/lisaac/luci-app-diskman.git                                                                              # Diskman 磁盘分区管理
 
 git clone --depth 1 https://github.com/sirpdboy/luci-app-poweroffdevice.git                                                                         # 设备关机
 ### git clone --depth 1 https://github.com/esirplayground/luci-app-poweroff                                                                              # 关机插件
 
-git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edge       # Edge 带背景音乐
+git clone --depth 1 https://github.com/garypang13/luci-theme-edge luci-theme-edge                                                                     # Edge 带背景音乐
 
 #git clone --depth 1 https://github.com/sirpdboy/luci-app-autotimeset.git                                                                           # 插件 执行定时任务
 #git clone --depth 1 https://github.com/sirpdboy/netspeedtest.git                                                                                   # 网络速度测试
