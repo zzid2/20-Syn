@@ -175,6 +175,8 @@ jobs:
         rm -rf `find ./* -maxdepth 0 -type d ! -name "build"` >/dev/null 2>&1                      ## 删除 当前目录内所有文件，但排除"build"目录；
         
         
+        echo " main 分支已经下载完成，准备执行 main.sh 单独下载最新插件 "
+        
         ## 第二次单独下载最新版插件
         bash /$GITHUB_WORKSPACE/build/${{matrix.target}}.sh                                        ## 执行main.sh       重新克隆一遍 最新版的插件！！！
         bash /$GITHUB_WORKSPACE/build/convert_translation.sh                                       ## 执行convert_translation.sh  全部改成zh-cn中文
