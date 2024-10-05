@@ -63,7 +63,7 @@ git clone --depth 1 -b master https://github.com/UnblockNeteaseMusic/luci-app-un
 git clone --depth 1 https://github.com/zzsj0928/luci-app-pushbot.git                                                                            # luci-app-pushbot       全能推送插件
 ### git clone --depth 1 -b openwrt-18.06 https://github.com/tty228/luci-app-wechatpush.git                                                          # luci-app-wechatpush   （微信/Telegram）推送插件
 
-git clone --depth 1 https://github.com/gdy666/luci-app-lucky.git                                                                                # luci-app-lucky   动态域名解析
+git clone --depth 1 https://github.com/gdy666/luci-app-lucky.git luci-app-lucky                                                                 # luci-app-lucky   动态域名解析
 
 git clone --depth 1 https://github.com/Hyy2001X/AutoBuild-Packages && mv -n AutoBuild-Packages/luci-app-adguardhome ./; rm -rf AutoBuild-Packages   # Adguardhome AD去广告
 ### git clone --depth 1 https://github.com/kenzok78/luci-app-adguardhome																			# Adguardhome AD去广告
